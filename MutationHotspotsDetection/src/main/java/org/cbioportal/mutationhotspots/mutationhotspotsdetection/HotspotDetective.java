@@ -15,8 +15,6 @@ public interface HotspotDetective {
         
     void setParameters(HotspotDetectiveParameters parameters) throws HotspotException;
     
-    void detectHotspots(MutatedProtein mutatedProtein) throws HotspotException;
-   
-    Set<Hotspot> getDetectedHotspots();
+    Set<Hotspot> detectHotspots(MutatedProtein mutatedProtein) throws HotspotException;
 
 }
