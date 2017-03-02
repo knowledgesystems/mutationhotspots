@@ -103,18 +103,13 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
             removeNonrecurrentHotspots(mapResidueHotspot);
         }
 
-        protein.setProteinLength(getLengthOfProtein(protein, mapResidueHotspot.values()));
 
         // process all hotspots
-                Map<MutatedProtein, Set<Hotspot>> mapHotspots = processSingleHotspotsOnAProtein(protein, mapResidueHotspot);
-        for (Map.Entry<MutatedProtein, Set<Hotspot>> entry : mapHotspots.entrySet()) {
-            MutatedProtein mutatedProtein = entry.getKey();
-            Set<Hotspot> hotspotsOnAProtein = entry.getValue();
-            if (!hotspotsOnAProtein.isEmpty()) {
-                mutatedProtein.setProteinLength(getLengthOfProtein(protein, hotspotsOnAProtein));
-//                mutatedProtein.setNumberOfMutations(getNumberOfAllMutationOnProtein(hotspotsOnAProtein)); // only have to set once
-            }
-
+        Map<MutatedProtein, Set<Hotspot>> mapHotspots = processSingleHotspotsOnAProtein(protein, mapResidueHotspot);
+        mapHotspots.entrySet().stream().map((entry) -> entry.getValue()).forEachOrdered((hotspotsOnAProtein) -> {
+            //            if (!hotspotsOnAProtein.isEmpty()) {
+            //                mutatedProtein.setNumberOfMutations(getNumberOfAllMutationOnProtein(hotspotsOnAProtein)); // only have to set once
+            //            }
             double p = parameters.getPValueThreshold();
             if (p>0 && p<1) {
                 for (Hotspot hotspot : hotspotsOnAProtein) {
@@ -125,89 +120,18 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
             } else {
                 hotspots.addAll(hotspotsOnAProtein);
             }
-        }
+        });
         
         return hotspots;
     }
     
     protected int getNumberOfAllMutationOnProtein(Collection<Hotspot> hotspotsOnAProtein) {
         // default behavior for single and linear hotspots
-        Set<Mutation> mutations = new HashSet<Mutation>();
+        Set<Mutation> mutations = new HashSet<>();
         hotspotsOnAProtein.forEach((hotspot) -> {
             mutations.addAll(hotspot.getMutations());
         });
         return mutations.size();
-    }
-    
-    
-    protected int getLengthOfProtein(MutatedProtein protein, Collection<Hotspot> hotspotsOnAProtein) {
-        // default behavior for single and linear hotspots
-        int length = getProteinLengthFromUniprot(protein.getUniprotAcc());
-        
-        
-        int largetMutatedResidue = getLargestMutatedResidue(hotspotsOnAProtein);
-        if (length < largetMutatedResidue) {
-            // TODO: this is not ideal -- under estimating p values
-            length = largetMutatedResidue;
-            System.out.println("Used largest mutated residues ("+length+") for protein "+protein.getUniprotAcc());
-        }
-        
-        return length;
-    }
-    
-    protected final int getLargestMutatedResidue(Collection<Hotspot> hotspotsOnAProtein) {
-        int length = 0;
-        for (Hotspot hotspot : hotspotsOnAProtein) {
-            int residue = hotspot.getResidues().last();
-            if (residue>length) {
-                length = residue;
-            }
-        }
-        return length;
-    }
-    
-    private static HttpClient httpClient;
-    static {
-        int timeOut = 5000;
-        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
-        connectionManager.getParams().setConnectionTimeout(timeOut);
-        HttpClientParams params = new HttpClientParams();
-        params.setIntParameter(HttpClientParams.CONNECTION_MANAGER_TIMEOUT, timeOut);
-        httpClient = new HttpClient(params, connectionManager);
-    }
-    
-    private static int getProteinLengthFromUniprot(String uniprotAcc) {
-        String strURL = "http://www.uniprot.org/uniprot/"+uniprotAcc+".fasta";
-        GetMethod method = new GetMethod(strURL);
-        
-        try {
-            int statusCode = httpClient.executeMethod(method);
-            if (statusCode == HttpStatus.SC_OK) {
-                BufferedReader bufReader = new BufferedReader(
-                        new InputStreamReader(method.getResponseBodyAsStream()));
-                String line = bufReader.readLine();
-                if (line==null||!line.startsWith(">")) {
-                    return 0;
-                }
-                
-                int len = 0;
-                for (line=bufReader.readLine(); line!=null; line=bufReader.readLine()) {
-                    len += line.length();
-                }
-                return len;
-            } else {
-                //  Otherwise, throw HTTP Exception Object
-                throw new HttpException(statusCode + ": " + HttpStatus.getStatusText(statusCode)
-                        + " Base URL:  " + strURL);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        } finally {
-            //  Must release connection back to Apache Commons Connection Pool
-            method.releaseConnection();
-        }
     }
     
 }

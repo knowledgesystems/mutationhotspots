@@ -250,12 +250,6 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
         return ret;
     }
     
-    @Override
-    protected int getLengthOfProtein(MutatedProtein protein, Collection<Hotspot> mapResidueHotspot) {
-        return super.getLengthOfProtein(protein, mapResidueHotspot);
-        //return protein.getProteinLength(); // skip it.. since it's already set
-    }
-    
     private List<SortedSet<Integer>> cleanResiduesSet(Collection<SortedSet<Integer>> residuesSet) {
         List<SortedSet<Integer>> ret = new ArrayList<SortedSet<Integer>>();
         for (SortedSet<Integer> residues : residuesSet) {

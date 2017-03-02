@@ -38,11 +38,6 @@ public interface MutatedProtein {
     
     /**
      * 
-     */
-    public void setProteinLength(int proteinLegnth);
-    
-    /**
-     * 
      * @return 
      */
     public List<Mutation> getMutations();

@@ -5,10 +5,19 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompoundSet;
 import org.biojava.nbio.core.sequence.loader.UniprotProxySequenceReader;
@@ -25,14 +34,16 @@ public class MutatedProteinImpl implements MutatedProtein {
     private List<Mutation> mutations;
     
     public MutatedProteinImpl(MutatedProtein protein) {
-        this(protein.getGene());
-        setUniprotAcc(protein.getUniprotAcc());
-        setProteinLength(protein.getProteinLength());
+        this(protein.getGene(), protein.getUniprotAcc());
+        proteinLength = protein.getProteinLength();
         setMutations(protein.getMutations());
     }
 
-    public MutatedProteinImpl(String gene) {
+    public MutatedProteinImpl(String gene, String uniprotAcc) {
         this.gene = gene;
+        this.uniprotAcc = uniprotAcc;
+        mutations = new ArrayList<>();
+        proteinLength = 0;
     }
 
     @Override
@@ -51,12 +62,61 @@ public class MutatedProteinImpl implements MutatedProtein {
 
     @Override
     public final int getProteinLength() {
+        for (int i=0; i<3 || proteinLength>0; i++) { // try 3 times
+            proteinLength = getProteinLengthFromUniprot(uniprotAcc);
+        }
+        
+        if (proteinLength==0) {
+            System.err.println("Could not retrive length of protein "+uniprotAcc);
+        }
+        
         return proteinLength;
     }
+    
+    
+    
+    private static HttpClient httpClient;
+    static {
+        int timeOut = 5000;
+        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
+        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
+        connectionManager.getParams().setConnectionTimeout(timeOut);
+        HttpClientParams params = new HttpClientParams();
+        params.setIntParameter(HttpClientParams.CONNECTION_MANAGER_TIMEOUT, timeOut);
+        httpClient = new HttpClient(params, connectionManager);
+    }
+    
+    private static int getProteinLengthFromUniprot(String uniprotAcc) {
+        String strURL = "http://www.uniprot.org/uniprot/"+uniprotAcc+".fasta";
+        GetMethod method = new GetMethod(strURL);
 
-    @Override
-    public final void setProteinLength(int proteinLength) {
-        this.proteinLength = proteinLength;
+        try {
+            int statusCode = httpClient.executeMethod(method);
+            if (statusCode == HttpStatus.SC_OK) {
+                BufferedReader bufReader = new BufferedReader(
+                        new InputStreamReader(method.getResponseBodyAsStream()));
+                String line = bufReader.readLine();
+                if (line==null||!line.startsWith(">")) {
+                    return 0;
+                }
+
+                int len = 0;
+                for (line=bufReader.readLine(); line!=null; line=bufReader.readLine()) {
+                    len += line.length();
+                }
+                return len;
+            } else {
+                //  Otherwise, throw HTTP Exception Object
+                throw new HttpException(statusCode + ": " + HttpStatus.getStatusText(statusCode)
+                        + " Base URL:  " + strURL);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            //  Must release connection back to Apache Commons Connection Pool
+            method.releaseConnection();
+        }
     }
 
     @Override
