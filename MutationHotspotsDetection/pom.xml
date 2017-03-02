@@ -36,5 +36,15 @@
             <artifactId>commons-lang</artifactId>
             <version>2.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.biojava</groupId>
+            <artifactId>biojava-structure</artifactId>
+            <version>4.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.genomenexus</groupId>
+            <artifactId>genomenexus-g2s-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * @author jgao
  */
-public interface Hotspot3D {
+public interface Hotspot3D extends Hotspot {
     /**
      * 
      * @return 
