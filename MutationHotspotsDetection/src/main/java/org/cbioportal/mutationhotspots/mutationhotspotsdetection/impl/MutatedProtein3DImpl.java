@@ -20,10 +20,6 @@ public class MutatedProtein3DImpl extends MutatedProteinImpl implements MutatedP
         super(protein);
     }
 
-    public MutatedProtein3DImpl(String gene, String uniprotAcc) {
-        super(gene, uniprotAcc);
-    }
-
     @Override
     public String getPdbId() {
         return pdbId;

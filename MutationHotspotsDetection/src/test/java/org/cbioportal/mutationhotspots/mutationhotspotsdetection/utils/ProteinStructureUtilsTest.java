@@ -9,12 +9,12 @@ import java.util.Map;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedProteinImpl;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinImpl;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -51,7 +51,7 @@ public class ProteinStructureUtilsTest {
 //        String dirPdbCache = "/Users/jgao/projects/cbio-portal-data/reference-data/pdb-cache";
         ProteinStructureUtils instance = ProteinStructureUtils.getInstance();
         
-        MutatedProtein mutatedProtein = new MutatedProteinImpl("MAP2K1", "Q02750");
+        MutatedProtein mutatedProtein = new MutatedProteinImpl(new ProteinImpl("MAP2K1", "Q02750"));
         double identpThreshold = 90;
         double distanceThresholdClosestAtoms = 5.0;
         

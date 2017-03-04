@@ -21,6 +21,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedProteinImpl;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutationImpl;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinImpl;
 
 /**
  *
@@ -29,6 +30,9 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutationIm
 public final class MafReader {
     
     private static final String HEADER_GENE = "Hugo_Symbol";
+    private static final String HEADER_GENE_ID = "Gene";
+    private static final String HEADER_TRANSCRIPT_ID = "Transcript_ID";
+    private static final String HEADER_PROTEIN_ID = "ENSP";
     private static final String HEADER_UNIPROT = "SWISSPROT";
     private static final String HEADER_MUTATION_TYPE = "Variant_Classification";
     private static final String HEADER_PROTEIN_POSITION = "Protein_position";
@@ -90,11 +94,14 @@ public final class MafReader {
                 
                 String patient = parts[headers.get(HEADER_PATIENT)];
                 String gene = parts[headers.get(HEADER_GENE)];
+                String geneId = parts[headers.get(HEADER_GENE_ID)];
+                String transcriptId = parts[headers.get(HEADER_TRANSCRIPT_ID)];
+                String proteinId = parts[headers.get(HEADER_PROTEIN_ID)];
                 String uniprot = parts[headers.get(HEADER_UNIPROT)];
                 
                 MutatedProtein protein = mutatedProteins.get(uniprot);
                 if (protein==null) {
-                    protein = new MutatedProteinImpl(gene, uniprot);
+                    protein = new MutatedProteinImpl(new ProteinImpl(gene, uniprot));
                     mutatedProteins.put(uniprot, protein);
                 }
                 

@@ -10,6 +10,7 @@ import java.util.Collections;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import java.util.List;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 
 /**
  *
@@ -18,24 +19,15 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
 public class MutatedProteinImpl extends ProteinImpl implements MutatedProtein {
     private List<Mutation> mutations;
     
+    public MutatedProteinImpl(Protein protein) {
+        super(protein);
+        this.mutations = new ArrayList<>();
+    }
+    
     public MutatedProteinImpl(MutatedProtein protein) {
-        this.gene = protein.getGene();
-        this.uniprotAcc = protein.getUniprotAcc();
-        proteinLength = protein.getProteinLength();
+        super(protein);
         this.mutations = new ArrayList<>(protein.getMutations());
     }
-
-    public MutatedProteinImpl(String gene, String uniprotAcc) {
-        this.gene = gene;
-        this.uniprotAcc = uniprotAcc;
-        try {
-            setUniProt();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        mutations = new ArrayList<>();
-    }
-
 
     @Override
     public final List<Mutation> getMutations() {

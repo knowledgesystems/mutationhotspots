@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
@@ -21,16 +22,34 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
  * @author jgao
  */
 public class ProteinImpl implements Protein {
-    
-    protected static Map<String, String> uniprotSequences = new HashMap<String, String>();
     protected String gene;
     protected String geneId;
     protected String transcriptId;
     protected String proteinId;
     protected String uniprotAcc;
     protected int proteinLength;
+    protected String proteinSequence;
 
     public ProteinImpl() {
+    }
+    
+    public ProteinImpl(Protein protein) {
+        this.gene = protein.getGene();
+        this.geneId = protein.getGeneId();
+        this.transcriptId = protein.getTranscriptId();
+        this.proteinId = protein.getProteinId();
+        this.uniprotAcc = protein.getUniprotAcc();
+        proteinLength = protein.getProteinLength();
+    }
+
+    public ProteinImpl(String gene, String uniprotAcc) {
+        this.gene = gene;
+        this.uniprotAcc = uniprotAcc;
+        try {
+            setUniProt();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -76,6 +95,14 @@ public class ProteinImpl implements Protein {
         return proteinLength;
     }
 
+    public String getProteinSequence() {
+        return proteinSequence;
+    }
+
+    public void setProteinSequence(String proteinSequence) {
+        this.proteinSequence = proteinSequence;
+    }
+
     protected void setUniProt() throws Exception {
         String strURL = "http://www.uniprot.org/uniprot/" + uniprotAcc + ".fasta";
         try (final InputStream in = new URL(strURL).openStream()) {
@@ -93,26 +120,13 @@ public class ProteinImpl implements Protein {
                     System.err.println("Not a SP entry: " + strURL);
                 }
             }
-            proteinLength = 0;
+            StringBuilder sb = new StringBuilder();
             while ((line = buf.readLine()) != null) {
-                proteinLength += line.trim().length();
+                sb.append(line.trim());
             }
+            this.proteinSequence = sb.toString();
+            proteinLength += proteinSequence.length();
         }
-    }
-
-    @Override
-    public String getProteinSequence() {
-        if (!uniprotSequences.containsKey(uniprotAcc)) {
-            String seq = null;
-            try {
-                UniprotProxySequenceReader<AminoAcidCompound> uniprotSequence = new UniprotProxySequenceReader<AminoAcidCompound>(uniprotAcc, AminoAcidCompoundSet.getAminoAcidCompoundSet());
-                seq = uniprotSequence.getSequenceAsString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            uniprotSequences.put(uniprotAcc, seq);
-        }
-        return uniprotSequences.get(uniprotAcc);
     }
 
     @Override
