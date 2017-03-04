@@ -11,30 +11,7 @@ import java.util.List;
  *
  * @author jgao
  */
-public interface MutatedProtein {
-    /**
-     * 
-     * @return 
-     */
-    public String getGene();
-    
-    /**
-     * 
-     * @return Uniprot Acc, e.g. P04637
-     */
-    public String getUniprotAcc(); 
-    
-    /**
-     * 
-     * @return 
-     */
-    public int getProteinLength();
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getProteinSequence();
+public interface MutatedProtein extends Protein {
     
     /**
      * 
@@ -44,6 +21,7 @@ public interface MutatedProtein {
     
     /**
      * 
+     * @param mutation
      */
     public void addMutation(Mutation mutation);
 }

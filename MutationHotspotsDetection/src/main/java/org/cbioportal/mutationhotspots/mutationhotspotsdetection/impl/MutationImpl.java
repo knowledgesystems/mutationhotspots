@@ -1,15 +1,15 @@
 
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl;
 
-import java.util.Objects;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 
 /**
  *
  * @author jgao
  */
 public class MutationImpl implements Mutation {
-    private String gene;
+    private Protein protein;
     private String uniprotAcc;
     private String mutationType;
     private int proteinStart;
@@ -17,9 +17,9 @@ public class MutationImpl implements Mutation {
     private String proteinChange;
     private String patient;
 
-    public MutationImpl(String gene, String uniprotAcc, String mutationType,
+    public MutationImpl(Protein protein, String mutationType,
             int proteinStart, int proteinEnd, String proteinChange, String patient) {
-        this.gene = gene;
+        this.protein = protein;
         this.uniprotAcc = uniprotAcc;
         this.mutationType = mutationType;
         this.proteinStart = proteinStart;
@@ -29,23 +29,13 @@ public class MutationImpl implements Mutation {
     }
 
     @Override
-    public String getGene() {
-        return gene;
+    public Protein getProtein() {
+        return protein;
     }
 
     @Override
-    public void setGene(String gene) {
-        this.gene = gene;
-    }
-
-    @Override
-    public String getUniprotAcc() {
-        return uniprotAcc;
-    }
-
-    @Override
-    public void setUniprotAcc(String uniprotAcc) {
-        this.uniprotAcc = uniprotAcc;
+    public void setProtein(Protein protein) {
+        this.protein = protein;
     }
 
     @Override

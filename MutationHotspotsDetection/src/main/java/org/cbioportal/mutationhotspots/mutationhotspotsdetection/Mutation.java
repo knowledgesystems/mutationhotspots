@@ -7,9 +7,7 @@ package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
  */
 public interface Mutation {
 
-    String getUniprotAcc();
-
-    String getGene();
+    Protein getProtein();
 
     String getMutationType();
 
@@ -19,9 +17,7 @@ public interface Mutation {
 
     int getProteinStart();
 
-    void setUniprotAcc(String uniprotAcc);
-
-    void setGene(String gene);
+    void setProtein(Protein protein);
 
     void setMutationType(String mutationType);
 

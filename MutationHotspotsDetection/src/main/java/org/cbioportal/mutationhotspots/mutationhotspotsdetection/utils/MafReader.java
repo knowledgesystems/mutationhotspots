@@ -92,13 +92,13 @@ public final class MafReader {
                 String gene = parts[headers.get(HEADER_GENE)];
                 String uniprot = parts[headers.get(HEADER_UNIPROT)];
                 
-                Mutation mu = new MutationImpl(gene, uniprot, mutationType, proteinStart, proteinEnd, proteinChange, patient);
-                
                 MutatedProtein protein = mutatedProteins.get(uniprot);
                 if (protein==null) {
                     protein = new MutatedProteinImpl(gene, uniprot);
                     mutatedProteins.put(uniprot, protein);
                 }
+                
+                Mutation mu = new MutationImpl(protein, mutationType, proteinStart, proteinEnd, proteinChange, patient);
                 
                 protein.addMutation(mu);
             }
