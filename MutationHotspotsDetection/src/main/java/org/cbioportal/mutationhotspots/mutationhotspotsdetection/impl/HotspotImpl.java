@@ -116,7 +116,7 @@ public class HotspotImpl implements Hotspot {
         }
         
         StringBuilder sb = new StringBuilder();
-        sb.append(protein.getGene()).append(" ");
+        sb.append(protein.getGeneSymbol()).append(" ");
         
         String sequence = protein.getProteinSequence();
         Map<Integer, Set<Mutation>> mapResidueMuations = getMapResidueMutations();
@@ -186,7 +186,7 @@ public class HotspotImpl implements Hotspot {
             int proteinLength = protein.getProteinLength();
             
             if (proteinLength<=0) {
-                System.err.println("Protein length is not available for "+protein.getGene()
+                System.err.println("Protein length is not available for "+protein.getGeneSymbol()
                         +"("+protein.getUniprotAcc()+")");
                 return Double.NaN;
             }

@@ -12,33 +12,31 @@ import java.util.List;
  * @author jgao
  */
 public interface Protein {
-    /**
-     * 
-     * @return 
-     */
-    public String getGene();
+
+    String getGeneId();
+
+    String getGeneSymbol();
+
+    String getProteinId();
+
+    int getProteinLength();
+
+    String getProteinSequence();
+
+    String getTranscriptId();
+
+    String getUniprotAcc();
+
+    void setGeneId(String geneId);
+
+    void setGeneSymbol(String geneSymbol);
+
+    void setProteinId(String proteinId);
+
+    void setProteinSequence(String proteinSequence);
+
+    void setTranscriptId(String transcriptId);
+
+    void setUniprotAcc(String uniprotAcc);
     
-    public String getGeneId();
-    
-    public String getTranscriptId();
-    
-    public String getProteinId();
-    
-    /**
-     * 
-     * @return Uniprot Acc, e.g. P04637
-     */
-    public String getUniprotAcc(); 
-    
-    /**
-     * 
-     * @return 
-     */
-    public int getProteinLength();
-    
-    /**
-     * 
-     * @return 
-     */
-    public String getProteinSequence();
 }

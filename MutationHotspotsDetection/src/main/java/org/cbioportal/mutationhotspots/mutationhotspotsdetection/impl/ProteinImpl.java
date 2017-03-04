@@ -9,12 +9,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
-import org.biojava.nbio.core.sequence.compound.AminoAcidCompoundSet;
-import org.biojava.nbio.core.sequence.loader.UniprotProxySequenceReader;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 
 /**
@@ -22,28 +16,27 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
  * @author jgao
  */
 public class ProteinImpl implements Protein {
-    protected String gene;
+    protected String geneSymbol;
     protected String geneId;
     protected String transcriptId;
     protected String proteinId;
     protected String uniprotAcc;
-    protected int proteinLength;
     protected String proteinSequence;
 
     public ProteinImpl() {
     }
     
     public ProteinImpl(Protein protein) {
-        this.gene = protein.getGene();
+        this.geneSymbol = protein.getGeneSymbol();
         this.geneId = protein.getGeneId();
         this.transcriptId = protein.getTranscriptId();
         this.proteinId = protein.getProteinId();
         this.uniprotAcc = protein.getUniprotAcc();
-        proteinLength = protein.getProteinLength();
+        this.proteinSequence = protein.getProteinSequence();
     }
 
     public ProteinImpl(String gene, String uniprotAcc) {
-        this.gene = gene;
+        this.geneSymbol = gene;
         this.uniprotAcc = uniprotAcc;
         try {
             setUniProt();
@@ -53,30 +46,41 @@ public class ProteinImpl implements Protein {
     }
 
     @Override
-    public final String getGene() {
-        return gene;
+    public String getGeneSymbol() {
+        return geneSymbol;
+    }
+    
+    @Override
+    public void setGeneSymbol(String geneSymbol) {
+        this.geneSymbol = geneSymbol;
     }
 
+    @Override
     public String getGeneId() {
         return geneId;
     }
 
+    @Override
     public void setGeneId(String geneId) {
         this.geneId = geneId;
     }
 
+    @Override
     public String getTranscriptId() {
         return transcriptId;
     }
 
+    @Override
     public void setTranscriptId(String transcriptId) {
         this.transcriptId = transcriptId;
     }
 
+    @Override
     public String getProteinId() {
         return proteinId;
     }
 
+    @Override
     public void setProteinId(String proteinId) {
         this.proteinId = proteinId;
     }
@@ -86,19 +90,22 @@ public class ProteinImpl implements Protein {
         return uniprotAcc;
     }
 
+    @Override
     public final void setUniprotAcc(String uniprotAcc) {
         this.uniprotAcc = uniprotAcc;
     }
 
     @Override
     public final int getProteinLength() {
-        return proteinLength;
+        return proteinSequence.length();
     }
 
+    @Override
     public String getProteinSequence() {
         return proteinSequence;
     }
 
+    @Override
     public void setProteinSequence(String proteinSequence) {
         this.proteinSequence = proteinSequence;
     }
@@ -125,14 +132,13 @@ public class ProteinImpl implements Protein {
                 sb.append(line.trim());
             }
             this.proteinSequence = sb.toString();
-            proteinLength += proteinSequence.length();
         }
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 17 * hash + (this.gene != null ? this.gene.hashCode() : 0);
+        hash = 17 * hash + (this.geneSymbol != null ? this.geneSymbol.hashCode() : 0);
         hash = 17 * hash + (this.uniprotAcc != null ? this.uniprotAcc.hashCode() : 0);
         return hash;
     }
@@ -146,7 +152,7 @@ public class ProteinImpl implements Protein {
             return false;
         }
         final MutatedProteinImpl other = (MutatedProteinImpl) obj;
-        if (this.gene != other.gene && (this.gene == null || !this.gene.equals(other.gene))) {
+        if (this.geneSymbol != other.geneSymbol && (this.geneSymbol == null || !this.geneSymbol.equals(other.geneSymbol))) {
             return false;
         }
         if ((this.uniprotAcc == null) ? (other.uniprotAcc != null) : !this.uniprotAcc.equals(other.uniprotAcc)) {
@@ -158,7 +164,7 @@ public class ProteinImpl implements Protein {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(gene);
+        sb.append(geneSymbol);
         if (uniprotAcc != null) {
             sb.append("_").append(uniprotAcc);
         }

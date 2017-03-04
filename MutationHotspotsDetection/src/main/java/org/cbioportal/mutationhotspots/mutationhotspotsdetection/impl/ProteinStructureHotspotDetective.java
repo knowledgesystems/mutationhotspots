@@ -72,7 +72,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
                 decoyCountsList = generateDecoys(counts, contactMap.getProteinLeft(), contactMap.getProteinRight()+1, 10000);
             }
             
-            System.out.println("\t"+protein3D.getGene()+" "+(++i)+"/"+contactMaps.size()+". Processing "
+            System.out.println("\t"+protein3D.getGeneSymbol()+" "+(++i)+"/"+contactMaps.size()+". Processing "
                     +protein3D.getPdbId()+"."+protein3D.getPdbChain());
             
             Set<SortedSet<Integer>> clusters = findConnectedNeighbors(contactMap.getContact(), mapResidueHotspot.keySet());
