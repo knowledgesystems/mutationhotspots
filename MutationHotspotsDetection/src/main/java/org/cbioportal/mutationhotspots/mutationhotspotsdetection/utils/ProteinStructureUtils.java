@@ -62,6 +62,7 @@ public  class ProteinStructureUtils {
         Map<MutatedProtein3D, ContactMap> contactMaps = new HashMap<>();
         Map<MutatedProtein3D, List<Alignment>> mapAlignments = getAlignments(mutatedProtein, identpThreshold);
         mapAlignments.forEach((protein3D, alignments)->{
+            System.out.println("calculating contact map for "+protein3D.getPdbId()+"."+protein3D.getPdbChain());
             OneToOneMap<Integer, Integer> pdbSeqResidueMapping = getPdbSeqResidueMapping(alignments);
             Map<Integer, Set<Integer>> pdbContactMap = getPdbContactMap(protein3D.getPdbId(), protein3D.getPdbChain(), distanceThresholdClosestAtoms);
             ContactMap contactMap = getContactMap(pdbContactMap, pdbSeqResidueMapping, mutatedProtein.getProteinLength());
@@ -124,7 +125,7 @@ public  class ProteinStructureUtils {
                 Pair<Atom> atoms = atomContact.getPair();
                 Group group1 = atoms.getFirst().getGroup();
                 Group group2 = atoms.getSecond().getGroup();
-                if (!group1.hasAminoAtoms() || group2.hasAminoAtoms()) {
+                if (!group1.hasAminoAtoms() || !group2.hasAminoAtoms() || group1==group2) {
                     continue;
                 }
                 
@@ -156,7 +157,7 @@ public  class ProteinStructureUtils {
             List<Alignment> alignments = g2sUniprotApi.getPdbAlignmentByUniprotIdUsingGET1(mutatedProtein.getUniprotAcc());
             
             alignments.forEach((alignment) -> {
-                double identp = 100.0 * alignment.getIdentity() / (alignment.getSeqTo() - alignment.getSeqFrom());
+                double identp = 100.0 * alignment.getIdentity() / (alignment.getSeqTo() - alignment.getSeqFrom() + 1);
                 if (identp >= identpThreshold) {
                     MutatedProtein3DImpl protein3D = new MutatedProtein3DImpl(mutatedProtein);
                     protein3D.setPdbId(alignment.getPdbId());
@@ -173,6 +174,7 @@ public  class ProteinStructureUtils {
             
         } catch (ApiException ex) {
             System.err.println("Could not retrieve alignments for "+mutatedProtein.getUniprotAcc());
+            System.err.println(ex.getMessage());
         }
         
         return map;

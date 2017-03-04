@@ -6,17 +6,20 @@
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompound;
 import org.biojava.nbio.core.sequence.compound.AminoAcidCompoundSet;
@@ -62,8 +65,17 @@ public class MutatedProteinImpl implements MutatedProtein {
 
     @Override
     public final int getProteinLength() {
-        for (int i=0; i<3 || proteinLength>0; i++) { // try 3 times
-            proteinLength = getProteinLengthFromUniprot(uniprotAcc);
+        if (proteinLength>0) {
+            return proteinLength;
+        }
+        
+        for (int i=0; i<3 && proteinLength==0; i++) {
+            // try 3 times
+            try {
+                proteinLength = getProteinLengthFromUniprot(uniprotAcc);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         
         if (proteinLength==0) {
@@ -86,36 +98,28 @@ public class MutatedProteinImpl implements MutatedProtein {
         httpClient = new HttpClient(params, connectionManager);
     }
     
-    private static int getProteinLengthFromUniprot(String uniprotAcc) {
+    private static int getProteinLengthFromUniprot(String uniprotAcc) throws IOException {
         String strURL = "http://www.uniprot.org/uniprot/"+uniprotAcc+".fasta";
-        GetMethod method = new GetMethod(strURL);
-
+        InputStream in = new URL( strURL ).openStream();
+        
         try {
-            int statusCode = httpClient.executeMethod(method);
-            if (statusCode == HttpStatus.SC_OK) {
-                BufferedReader bufReader = new BufferedReader(
-                        new InputStreamReader(method.getResponseBodyAsStream()));
-                String line = bufReader.readLine();
-                if (line==null||!line.startsWith(">")) {
-                    return 0;
-                }
-
-                int len = 0;
-                for (line=bufReader.readLine(); line!=null; line=bufReader.readLine()) {
-                    len += line.length();
-                }
-                return len;
-            } else {
-                //  Otherwise, throw HTTP Exception Object
-                throw new HttpException(statusCode + ": " + HttpStatus.getStatusText(statusCode)
-                        + " Base URL:  " + strURL);
+            InputStreamReader inR = new InputStreamReader( in );
+            BufferedReader buf = new BufferedReader( inR );
+            String line = buf.readLine();
+            if (line==null||!line.startsWith(">")) {
+                return 0;
             }
+            
+            int len = 0;
+            while ( ( line = buf.readLine() ) != null ) {
+                len += line.length();
+            }
+            return len;
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
         } finally {
-            //  Must release connection back to Apache Commons Connection Pool
-            method.releaseConnection();
+          in.close();
         }
     }
 
