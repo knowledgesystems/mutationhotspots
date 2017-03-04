@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import java.util.HashMap;
 import java.util.List;
@@ -37,16 +38,21 @@ public class MutatedProteinImpl implements MutatedProtein {
     private List<Mutation> mutations;
     
     public MutatedProteinImpl(MutatedProtein protein) {
-        this(protein.getGene(), protein.getUniprotAcc());
+        this.gene = protein.getGene();
+        this.uniprotAcc = protein.getUniprotAcc();
         proteinLength = protein.getProteinLength();
-        setMutations(protein.getMutations());
+        this.mutations = new ArrayList<>(protein.getMutations());
     }
 
     public MutatedProteinImpl(String gene, String uniprotAcc) {
         this.gene = gene;
         this.uniprotAcc = uniprotAcc;
+        try {
+            setUniProt();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         mutations = new ArrayList<>();
-        proteinLength = 0;
     }
 
     @Override
@@ -65,72 +71,43 @@ public class MutatedProteinImpl implements MutatedProtein {
 
     @Override
     public final int getProteinLength() {
-        if (proteinLength>0) {
-            return proteinLength;
-        }
-        
-        for (int i=0; i<3 && proteinLength==0; i++) {
-            // try 3 times
-            try {
-                proteinLength = getProteinLengthFromUniprot(uniprotAcc);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        
-        if (proteinLength==0) {
-            System.err.println("Could not retrive length of protein "+uniprotAcc);
-        }
-        
         return proteinLength;
     }
     
-    
-    
-    private static HttpClient httpClient;
-    static {
-        int timeOut = 5000;
-        MultiThreadedHttpConnectionManager connectionManager = new MultiThreadedHttpConnectionManager();
-        connectionManager.getParams().setDefaultMaxConnectionsPerHost(10);
-        connectionManager.getParams().setConnectionTimeout(timeOut);
-        HttpClientParams params = new HttpClientParams();
-        params.setIntParameter(HttpClientParams.CONNECTION_MANAGER_TIMEOUT, timeOut);
-        httpClient = new HttpClient(params, connectionManager);
-    }
-    
-    private static int getProteinLengthFromUniprot(String uniprotAcc) throws IOException {
+    private void setUniProt() throws Exception {
         String strURL = "http://www.uniprot.org/uniprot/"+uniprotAcc+".fasta";
-        InputStream in = new URL( strURL ).openStream();
-        
-        try {
+        try (InputStream in = new URL( strURL ).openStream()) {
             InputStreamReader inR = new InputStreamReader( in );
             BufferedReader buf = new BufferedReader( inR );
             String line = buf.readLine();
             if (line==null||!line.startsWith(">")) {
-                return 0;
+                throw new Exception("unable to read");
             }
             
-            int len = 0;
-            while ( ( line = buf.readLine() ) != null ) {
-                len += line.length();
+            {
+                String[] parts = line.split("\\|");
+                if (parts[0].equals(">sp")) {
+                    uniprotAcc = parts[1]; // in case uniprot id was used.
+                } else {
+                    System.err.println("Not a SP entry: "+strURL);
+                }
             }
-            return len;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return 0;
-        } finally {
-          in.close();
+            
+            proteinLength = 0;
+            while ( ( line = buf.readLine() ) != null ) {
+                proteinLength += line.trim().length();
+            }
         }
     }
 
     @Override
     public final List<Mutation> getMutations() {
-        return mutations;
+        return Collections.unmodifiableList(mutations);
     }
 
     @Override
-    public final void setMutations(List<Mutation> mutations) {
-        this.mutations = mutations;
+    public final void addMutation(Mutation mutation) {
+        this.mutations.add(mutation);
     }
 
     private static Map<String, String> uniprotSequences = new HashMap<String, String>();

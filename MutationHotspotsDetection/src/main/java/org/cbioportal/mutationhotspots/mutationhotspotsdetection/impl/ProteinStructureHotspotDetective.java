@@ -33,12 +33,9 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ProteinSt
  * @author jgao
  */
 public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
-    private final ProteinStructureUtils proteinStructureUtils;
     
-    public ProteinStructureHotspotDetective(HotspotDetectiveParameters parameters,
-            ProteinStructureUtils proteinStructureUtils) throws HotspotException {
+    public ProteinStructureHotspotDetective(HotspotDetectiveParameters parameters) throws HotspotException {
         super(parameters);
-        this.proteinStructureUtils = proteinStructureUtils;
     }
     
     /**
@@ -57,7 +54,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
         int[] counts = getMutationCountsOnProtein(mapResidueHotspot, protein.getProteinLength());
         
         Map<SortedSet<Integer>,Set<Hotspot>> mapResiduesHotspots3D = new HashMap<>();
-        Map<MutatedProtein3D,ContactMap> contactMaps = proteinStructureUtils.getContactMaps(protein,
+        Map<MutatedProtein3D,ContactMap> contactMaps = ProteinStructureUtils.getInstance().getContactMaps(protein,
                 parameters.getIdentpThresholdFor3DHotspots(), parameters.getDistanceClosestAtomsThresholdFor3DHotspots());
         int i = 0;
         for (Map.Entry<MutatedProtein3D, ContactMap> entryContactMaps : contactMaps.entrySet()) {
@@ -84,7 +81,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
                     continue;
                 }
                 
-                Hotspot hotspot3D = new HotspotImpl(protein3D, numberOfsequencedCases, residues);
+                Hotspot hotspot3D = new HotspotImpl(protein3D, residues);
                 
                 int maxCap = 0;
                 for (int residue : residues) {
@@ -124,7 +121,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
         for (Map.Entry<SortedSet<Integer>,Set<Hotspot>> entryMapResiduesHotspots3D : mapResiduesHotspots3D.entrySet()) {
             SortedSet<Integer> residues = entryMapResiduesHotspots3D.getKey();
             Set<Hotspot> hotspots = entryMapResiduesHotspots3D.getValue();
-            Hotspot3D hotspot3D = new Hotspot3DImpl(protein, numberOfsequencedCases, residues, hotspots);
+            Hotspot3D hotspot3D = new Hotspot3DImpl(protein, residues, hotspots);
             hotspot3D.mergeHotspot(hotspots.iterator().next()); // add mutations
             hotspots3D.add(hotspot3D);
         }

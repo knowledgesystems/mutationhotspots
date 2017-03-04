@@ -48,8 +48,8 @@ public class ProteinStructureUtilsTest {
     public void testGetContactMaps() {
         System.out.println("getContactMaps");
         
-        String dirPdbCache = "/Users/jgao/projects/cbio-portal-data/reference-data/pdb-cache";
-        ProteinStructureUtils instance = new ProteinStructureUtils(dirPdbCache);
+//        String dirPdbCache = "/Users/jgao/projects/cbio-portal-data/reference-data/pdb-cache";
+        ProteinStructureUtils instance = ProteinStructureUtils.getInstance();
         
         MutatedProtein mutatedProtein = new MutatedProteinImpl("MAP2K1", "Q02750");
         double identpThreshold = 90;

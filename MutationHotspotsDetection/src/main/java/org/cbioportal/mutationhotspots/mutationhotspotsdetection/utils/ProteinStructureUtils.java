@@ -37,16 +37,20 @@ import org.genomenexus.g2s.client.model.ResiduePresent;
  *
  * @author jgao
  */
-public  class ProteinStructureUtils {
+public final class ProteinStructureUtils {
+    private static final ProteinStructureUtils instance = new ProteinStructureUtils();
+    public static ProteinStructureUtils getInstance() {
+        return instance;
+    }
     
     private final UniprotApi g2sUniprotApi;
     private final AlignmentApi g2sAlignmentApi;
 
-    public ProteinStructureUtils(String dirPdbCache) {        
+    private ProteinStructureUtils() {        
         AtomCache atomCache = new AtomCache();
-        if (dirPdbCache!=null) {
-            atomCache.setCachePath(dirPdbCache);
-        }
+//        if (dirPdbCache!=null) {
+//            atomCache.setCachePath(dirPdbCache);
+//        }
         FileParsingParameters params = new FileParsingParameters();
         params.setAlignSeqRes(true);
         params.setParseSecStruc(false);

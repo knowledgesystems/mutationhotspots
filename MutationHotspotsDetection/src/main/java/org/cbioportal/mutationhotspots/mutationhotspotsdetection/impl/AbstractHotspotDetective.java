@@ -36,10 +36,6 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
 public abstract class AbstractHotspotDetective implements HotspotDetective {
     protected HotspotDetectiveParameters parameters;
     
-    private Set<Hotspot> hotspots;
-    protected int numberOfsequencedCases;
-    protected Map<MutatedProtein, Integer> numberOfAllMutationOnProteins = new HashMap<MutatedProtein, Integer>();
-
     public AbstractHotspotDetective(HotspotDetectiveParameters parameters) throws HotspotException {
         setParameters(parameters);
     }
@@ -47,7 +43,6 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
     @Override
     public final void setParameters(HotspotDetectiveParameters parameters) throws HotspotException {
         this.parameters = parameters;
-//        numberOfsequencedCases = getNumberOfSequencedCases();
     }
 
     /**
@@ -73,7 +68,7 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
             for (int res=start; res<=end; res++) {
                 Hotspot hotspot = map.get(res);
                 if (hotspot==null) {
-                    hotspot = new HotspotImpl(protein, numberOfsequencedCases, new TreeSet<Integer>(Arrays.asList(res)));
+                    hotspot = new HotspotImpl(protein, new TreeSet<Integer>(Arrays.asList(res)));
                     map.put(res, hotspot);
                 }
                 hotspot.addMutation(m);
@@ -105,6 +100,7 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
 
 
         // process all hotspots
+        Set<Hotspot> hotspots = new HashSet<>();
         Map<MutatedProtein, Set<Hotspot>> mapHotspots = processSingleHotspotsOnAProtein(protein, mapResidueHotspot);
         mapHotspots.entrySet().stream().map((entry) -> entry.getValue()).forEachOrdered((hotspotsOnAProtein) -> {
             //            if (!hotspotsOnAProtein.isEmpty()) {

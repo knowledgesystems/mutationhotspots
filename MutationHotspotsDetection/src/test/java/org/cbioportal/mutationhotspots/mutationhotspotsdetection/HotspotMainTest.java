@@ -5,6 +5,7 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
+import java.io.IOException;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,7 +42,7 @@ public class HotspotMainTest {
      * Test of main method, of class HotspotMain.
      */
     @Test
-    public void testMain() {
+    public void testMain() throws IOException, HotspotException {
         System.out.println("main");
         String[] args = null;
         HotspotMain.main(args);

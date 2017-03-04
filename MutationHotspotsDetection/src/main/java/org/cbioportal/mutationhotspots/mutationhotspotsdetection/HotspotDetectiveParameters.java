@@ -6,12 +6,26 @@
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
  * @author jgao
  */
 public class HotspotDetectiveParameters {
+    
+    public static HotspotDetectiveParameters getDefaultHotspotDetectiveParameters() {
+        HotspotDetectiveParameters defaultHotspotDetectiveParameters = new HotspotDetectiveParameters();
+        defaultHotspotDetectiveParameters.setCalculatePValue(true);
+        defaultHotspotDetectiveParameters.setMutationTypes(Collections.singleton("Missense_Mutation"));
+        defaultHotspotDetectiveParameters.setDistanceClosestAtomsThresholdFor3DHotspots(5.0);
+        defaultHotspotDetectiveParameters.setIdentpThresholdFor3DHotspots(90.0);
+        defaultHotspotDetectiveParameters.setIncludingMismatchesFor3DHotspots(false);
+        defaultHotspotDetectiveParameters.setPValueThreshold(0.1);
+        defaultHotspotDetectiveParameters.setSeperateByProteinChangesForSingleResidueHotspot(false);
+        return defaultHotspotDetectiveParameters;
+    }
+    
     private Collection<Integer> cancerStudyIds;
     private Collection<String> mutationTypes; // missense or truncating
     private Collection<Long> entrezGeneIds;

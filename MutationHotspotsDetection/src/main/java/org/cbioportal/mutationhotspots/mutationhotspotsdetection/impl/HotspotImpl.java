@@ -28,11 +28,10 @@ public class HotspotImpl implements Hotspot {
     private Set<Mutation> mutations;
     private Set<String> patients;
     private String label;
-    private int numberOfSequencedPatients;
     protected double pvalue;
     
-    public HotspotImpl(MutatedProtein protein, int numberOfSeqeuncedSamples) {
-        this(protein, numberOfSeqeuncedSamples, new TreeSet<Integer>());
+    public HotspotImpl(MutatedProtein protein) {
+        this(protein, new TreeSet<Integer>());
     }
 
     /**
@@ -41,9 +40,8 @@ public class HotspotImpl implements Hotspot {
      * @param residues
      * @param label 
      */
-    public HotspotImpl(MutatedProtein protein, int numberOfSeqeuncedSamples, SortedSet<Integer> residues) {
+    public HotspotImpl(MutatedProtein protein, SortedSet<Integer> residues) {
         this.protein = protein;
-        this.numberOfSequencedPatients = numberOfSeqeuncedSamples;
         this.residues = residues;
         this.mutations = new HashSet<Mutation>();
         this.patients = new HashSet<String>();
@@ -236,10 +234,5 @@ public class HotspotImpl implements Hotspot {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public int getNumberOfSequencedPatients() {
-        return numberOfSequencedPatients;
     }
 }

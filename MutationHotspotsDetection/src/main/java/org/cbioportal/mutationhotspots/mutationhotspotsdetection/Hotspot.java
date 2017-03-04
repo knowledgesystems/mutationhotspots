@@ -48,12 +48,6 @@ public interface Hotspot {
     
     /**
      * 
-     * @return number of all sequenced samples
-     */
-    public int getNumberOfSequencedPatients();
-    
-    /**
-     * 
      * @return 
      */
     public void setPValue(double pValue);

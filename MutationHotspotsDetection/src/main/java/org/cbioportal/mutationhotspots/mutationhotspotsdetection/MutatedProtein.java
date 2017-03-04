@@ -45,5 +45,5 @@ public interface MutatedProtein {
     /**
      * 
      */
-    public void setMutations(List<Mutation> mutations);
+    public void addMutation(Mutation mutation);
 }

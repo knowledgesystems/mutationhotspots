@@ -17,13 +17,15 @@ public class MutationImpl implements Mutation {
     private String proteinChange;
     private String patient;
 
-    public MutationImpl(String gene, String uniprotAcc, String mutationType, int proteinStart, int proteinEnd, String proteinChange) {
+    public MutationImpl(String gene, String uniprotAcc, String mutationType,
+            int proteinStart, int proteinEnd, String proteinChange, String patient) {
         this.gene = gene;
         this.uniprotAcc = uniprotAcc;
         this.mutationType = mutationType;
         this.proteinStart = proteinStart;
         this.proteinEnd = proteinEnd;
         this.proteinChange = proteinChange;
+        this.patient = patient;
     }
 
     @Override
