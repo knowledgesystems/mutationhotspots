@@ -10,7 +10,6 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
  */
 public class MutationImpl implements Mutation {
     private Protein protein;
-    private String uniprotAcc;
     private String mutationType;
     private int proteinStart;
     private int proteinEnd;
@@ -20,7 +19,6 @@ public class MutationImpl implements Mutation {
     public MutationImpl(Protein protein, String mutationType,
             int proteinStart, int proteinEnd, String proteinChange, String patient) {
         this.protein = protein;
-        this.uniprotAcc = uniprotAcc;
         this.mutationType = mutationType;
         this.proteinStart = proteinStart;
         this.proteinEnd = proteinEnd;

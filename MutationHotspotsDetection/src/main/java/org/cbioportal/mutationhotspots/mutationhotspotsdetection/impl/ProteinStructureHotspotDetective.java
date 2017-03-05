@@ -6,18 +6,15 @@
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot3D;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.HotspotDetectiveParameters;

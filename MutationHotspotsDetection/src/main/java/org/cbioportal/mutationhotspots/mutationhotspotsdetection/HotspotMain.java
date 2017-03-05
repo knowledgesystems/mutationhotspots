@@ -5,9 +5,8 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +20,7 @@ import java.util.TreeMap;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedResidueImpl;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinStructureHotspotDetective;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.EnsemblUtils;
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.MafReader;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.SortedMafReader;
 
 /**
  *
@@ -33,11 +32,11 @@ public class HotspotMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException {
-//        args = new String[] {
-//            "/Users/jgao/projects/tcga-pancan/filtering/example.maf",
-//            "/Users/jgao/projects/tcga-pancan/filtering/cancer_type.txt",
-//            "/Users/jgao/projects/tcga-pancan/output"
-//        };
+        args = new String[] {
+            "/Users/jgao/projects/tcga-pancan/filtering/example.maf",
+            "/Users/jgao/projects/tcga-pancan/filtering/cancer_type.txt",
+            "/Users/jgao/projects/tcga-pancan/filtering/results"
+        };
         
         InputStream isFa = HotspotMain.class.getResourceAsStream("/data/Homo_sapiens.GRCh38.pep.all.fa");
         Map<String, Protein> proteins = EnsemblUtils.readFasta(isFa);
@@ -52,30 +51,32 @@ public class HotspotMain {
     
     private static void processTCGAPancan(String mafFile, String cancerTypeFile, String outDir, Map<String, Protein> proteins, HotspotDetectiveParameters params) throws IOException {
         Map<String, Map<String, Set<String>>> mafFilters = getMafFilters(cancerTypeFile);
-        for (Map.Entry<String, Map<String, Set<String>>> entry : mafFilters.entrySet()) {
-            String outFile = outDir + "/" + entry.getKey();
-            System.out.println(entry.getKey());
-            Collection<MutatedProtein> mutatedProteins = MafReader.readMaf(mafFile, entry.getValue(), proteins);
-            process(mutatedProteins, params, outFile);
+        try (FileInputStream fis = new FileInputStream(mafFile)) {
+            for (Map.Entry<String, Map<String, Set<String>>> entry : mafFilters.entrySet()) {
+                String outFile = outDir + "/" + entry.getKey();
+                System.out.println(entry.getKey());
+                SortedMafReader mafReader = new SortedMafReader(fis, entry.getValue(), proteins);
+                process(mafReader, params, outFile);
+            }
         }
     }
     
     private static Map<String, Map<String, Set<String>>> getMafFilters(String cancerTypeFile) throws IOException {
         Map<String, Map<String, Set<String>>> map = new HashMap<>();
         map.put("PANCAN.txt", Collections.singletonMap("Variant_Classification", Collections.singleton("Missense_Mutation")));
-        try (BufferedReader br = new BufferedReader(new FileReader(cancerTypeFile))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                Map<String, Set<String>> filter = new HashMap<>();
-                filter.put("Variant_Classification", Collections.singleton("Missense_Mutation"));
-                filter.put("CODE", Collections.singleton(line));
-                map.put(line+".txt", filter);
-            }
-        }
+//        try (BufferedReader br = new BufferedReader(new FileReader(cancerTypeFile))) {
+//            String line;
+//            while ((line = br.readLine()) != null) {
+//                Map<String, Set<String>> filter = new HashMap<>();
+//                filter.put("Variant_Classification", Collections.singleton("Missense_Mutation"));
+//                filter.put("CODE", Collections.singleton(line));
+//                map.put(line+".txt", filter);
+//            }
+//        }
         return map;
     }
     
-    private static void process(Collection<MutatedProtein> mutatedProteins, HotspotDetectiveParameters params, String dirFile) throws IOException {
+    private static void process(SortedMafReader mafReader, HotspotDetectiveParameters params, String dirFile) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(dirFile))) {
             writer.append("gene\ttranscript\tprotein_change\tscore\tpvalue\tqvalue\tinfo\n");
 
@@ -83,9 +84,17 @@ public class HotspotMain {
 
             int idHotspot = 0;
             int count = 0;
-            System.out.println("Processing "+mutatedProteins.size()+" proteins...");
-            for (MutatedProtein mutatedProtein : mutatedProteins) {
+            System.out.println("Processing proteins...");
+            while (mafReader.hasNext()) {
+                MutatedProtein mutatedProtein = mafReader.next();
+                
                 System.out.println(""+(++count)+"."+mutatedProtein.getGeneSymbol());
+                
+                if (mutatedProtein.getMutations().isEmpty()) {
+                    System.out.println("\tNo mutations");
+                    continue;
+                }
+                
                 Set<Hotspot> hotspots;
                 try {
                     hotspots = hd.detectHotspots(mutatedProtein);
