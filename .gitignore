@@ -21,3 +21,5 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+/MutationHotspotsDetection/nbproject/
+/MutationHotspotsDetection/nbactions.xml
