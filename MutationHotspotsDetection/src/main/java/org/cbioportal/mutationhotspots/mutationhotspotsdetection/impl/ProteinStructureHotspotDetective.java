@@ -24,6 +24,9 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.HotspotDetectiv
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.HotspotException;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DecoySignificanceTest;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DetectedInDecoy;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.StructureHotspotDetectedInDecoy;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ContactMap;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ProteinStructureUtils;
 
@@ -66,10 +69,10 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
                 continue;
             }
             
-            int[][] decoyCountsList = null;
+            DecoySignificanceTest decoySignificanceTest = null;
             
             if (parameters.calculatePValue()) {
-                decoyCountsList = generateDecoys(counts, contactMap.getProteinLeft(), contactMap.getProteinRight()+1, 10000);
+                decoySignificanceTest = new DecoySignificanceTest(counts, contactMap.getProteinLeft(), contactMap.getProteinRight()+1);
             }
             
             System.out.println("\t"+protein3D.getGeneSymbol()+" "+(++i)+"/"+contactMaps.size()+". Processing "
@@ -102,8 +105,9 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
                     }
                     
                     if (parameters.calculatePValue()) {
+//                        DetectedInDecoy detectedInDecoy = new PositionsDetectedInDecoy(hotspot3D.getPatients().size(), residues);
                         DetectedInDecoy detectedInDecoy = new StructureHotspotDetectedInDecoy(contactMap, maxCap, hotspot3D.getPatients().size());
-                        double p = getP(detectedInDecoy, decoyCountsList);
+                        double p = decoySignificanceTest.test(detectedInDecoy);
                         hotspot3D.setPValue(p);
                     }
                     
@@ -117,14 +121,12 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
             return Collections.emptySet();
         }
         
-        Set<Hotspot> hotspots3D = new HashSet<Hotspot>(); 
-        for (Map.Entry<SortedSet<Integer>,Set<Hotspot>> entryMapResiduesHotspots3D : mapResiduesHotspots3D.entrySet()) {
-            SortedSet<Integer> residues = entryMapResiduesHotspots3D.getKey();
-            Set<Hotspot> hotspots = entryMapResiduesHotspots3D.getValue();
+        Set<Hotspot> hotspots3D = new HashSet<>(); 
+        mapResiduesHotspots3D.forEach((residues, hotspots)->{
             Hotspot3D hotspot3D = new Hotspot3DImpl(protein, residues, hotspots);
             hotspot3D.mergeHotspot(hotspots.iterator().next()); // add mutations
             hotspots3D.add(hotspot3D);
-        }
+        });
         
         return hotspots3D;
     }
@@ -135,101 +137,6 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
             ret[entry.getKey()] = entry.getValue().getPatients().size();
         }
         return ret;//Arrays.asList(ArrayUtils.toObject(ret));
-    }
-    
-    protected int[][] generateDecoys(int[] counts, int left, int right, int times) {
-        int[][] decoys = new int[times][];
-        for (int i=0; i<times; i++) {
-            decoys[i] = Arrays.copyOf(counts, counts.length);
-            shuffleArray(decoys[i], left, right);
-        }
-        return decoys;
-    }
-    
-    public static void shuffleArray(int[] a, int left, int right) {
-        Random random = new Random();
-        random.nextInt();
-        for (int i = left; i < right; i++) {
-          int change = i + random.nextInt(right - i);
-          swap(a, i, change);
-        }
-    }
-
-    private static void swap(int[] a, int i, int change) {
-        int helper = a[i];
-        a[i] = a[change];
-        a[change] = helper;
-    }
-    
-    static interface DetectedInDecoy {
-        boolean isDetectedInDecoy(final int[] decoy);
-    }
-    
-    private static class StructureHotspotDetectedInDecoy implements DetectedInDecoy {
-        private final ContactMap contactMap;
-        private final int maxCap;
-        private final int targetCount;
-        StructureHotspotDetectedInDecoy(final ContactMap contactMap, final int maxCap, final int targetCount) {
-            this.contactMap = contactMap;
-            this.maxCap = maxCap;
-            this.targetCount = targetCount;
-        }
-        public boolean isDetectedInDecoy(final int[] decoy) {
-            boolean[][] graph = contactMap.getContact();
-            int l = contactMap.getProteinLeft();
-            int r = contactMap.getProteinRight();
-            for (int i=l; i<r; i++) {
-                int count = 0;
-                for (int j=l; j<r; j++) {
-                    if (graph[i][j]) {
-                        int c = decoy[j];
-                        if (c > maxCap) {
-                            c = maxCap;
-                        }
-                        count += c;
-                        if (count >= targetCount) {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-    }
-    
-    protected double getP(final DetectedInDecoy detectedInDecoy, int[][] decoyCountsList) {
-        final AtomicInteger d = new AtomicInteger(0);
-        
-        int nDecoy = decoyCountsList.length;
-        int nThread = 50;
-        int bin = nDecoy / nThread;
-        Thread[] threads = new Thread[nThread];
-        for (int i = 0; i < nThread; i++) {
-            final int[][] decoys = java.util.Arrays.copyOfRange(decoyCountsList, i*bin, (i+1)*bin);
-            threads[i] = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (int[] decoy : decoys) {
-                        if (detectedInDecoy.isDetectedInDecoy(decoy)) {
-                            d.incrementAndGet();
-                        }
-                    }
-                }
-            });
-            threads[i].start();
-        }
-        
-        for (Thread thread : threads) {
-            try {
-                thread.join();
-            }catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-        
-        
-        return 1.0 * d.get() / decoyCountsList.length;
     }
     
     private Set<SortedSet<Integer>> findConnectedNeighbors(boolean[][] graph, Set<Integer> nodes) {
