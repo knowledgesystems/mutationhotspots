@@ -36,12 +36,12 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
 public abstract class AbstractHotspotDetective implements HotspotDetective {
     protected HotspotDetectiveParameters parameters;
     
-    public AbstractHotspotDetective(HotspotDetectiveParameters parameters) throws HotspotException {
+    public AbstractHotspotDetective(HotspotDetectiveParameters parameters) {
         setParameters(parameters);
     }
 
     @Override
-    public final void setParameters(HotspotDetectiveParameters parameters) throws HotspotException {
+    public final void setParameters(HotspotDetectiveParameters parameters) {
         this.parameters = parameters;
     }
 

@@ -22,7 +22,7 @@ public class ProteinImpl implements Protein {
     private String transcriptId;
     private String proteinId;
     private String uniprotAcc;
-    private String sequence;
+//    private String sequence;
     private int length;
 
     public ProteinImpl() {
@@ -34,7 +34,7 @@ public class ProteinImpl implements Protein {
         this.transcriptId = protein.getTranscriptId();
         this.proteinId = protein.getProteinId();
         this.uniprotAcc = protein.getUniprotAcc();
-        this.sequence = protein.getSequence();
+//        this.sequence = protein.getSequence();
         this.length = protein.getLength();
     }
 
@@ -103,15 +103,15 @@ public class ProteinImpl implements Protein {
         this.length = length;
     }
 
-    @Override
-    public String getSequence() {
-        return sequence;
-    }
+//    @Override
+//    public String getSequence() {
+//        return sequence;
+//    }
 
-    @Override
-    public void setSequence(String proteinSequence) {
-        this.sequence = proteinSequence;
-    }
+//    @Override
+//    public void setSequence(String proteinSequence) {
+//        this.sequence = proteinSequence;
+//    }
 
     protected void setUniProt() throws Exception {
         String strURL = "http://www.uniprot.org/uniprot/" + uniprotAcc + ".fasta";
@@ -130,11 +130,12 @@ public class ProteinImpl implements Protein {
                     System.err.println("Not a SP entry: " + strURL);
                 }
             }
-            StringBuilder sb = new StringBuilder();
-            while ((line = buf.readLine()) != null) {
-                sb.append(line.trim());
+            
+            if (this.length == 0) {
+                while ((line = buf.readLine()) != null) {
+                    this.length += line.trim().length();
+                }
             }
-            this.sequence = sb.toString();
         }
     }
 

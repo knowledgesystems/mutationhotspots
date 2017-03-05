@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -27,25 +28,39 @@ public class HotspotMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, HotspotException {
-        Set<String> mutationTypeFilter = Collections.singleton("Missense_Mutation");
+    public static void main(String[] args) throws IOException {
         
         InputStream isFa = HotspotMain.class.getResourceAsStream("/data/Homo_sapiens.GRCh38.pep.all.fa");
         Map<String, Protein> proteins = EnsemblUtils.readFasta(isFa);
         
-        InputStream isMaf = HotspotMain.class.getResourceAsStream("/data/MAP2K1.maf");
+        InputStream isMaf = HotspotMain.class.getResourceAsStream("/data/example.maf");
         
-        Collection<MutatedProtein> mutatedProteins = MafReader.readMaf(isMaf, mutationTypeFilter, proteins);
+        Map<String, Set<String>> mafFilter = new HashMap<>();
+        mafFilter.put("Variant_Classification", Collections.singleton("Missense_Mutation"));
+        Collection<MutatedProtein> mutatedProteins = MafReader.readMaf(isMaf, mafFilter, proteins);
         
+        process(mutatedProteins);
+    }
+    
+    private static void process(Collection<MutatedProtein> mutatedProteins) {
         HotspotDetectiveParameters params = HotspotDetectiveParameters.getDefaultHotspotDetectiveParameters();
-        params.setIdentpThresholdFor3DHotspots(100.0);
-        params.setPValueThreshold(0.1);
+//        params.setIdentpThresholdFor3DHotspots(90.0);
+//        params.setPValueThreshold(0.1);
         
         HotspotDetective hd = new ProteinStructureHotspotDetective(params);
                 
         int idHotspot = 0;
+        int count = 0;
+        System.out.println("Processing "+mutatedProteins.size()+" proteins...");
         for (MutatedProtein mutatedProtein : mutatedProteins) {
-            Set<Hotspot> hotspots = hd.detectHotspots(mutatedProtein);
+            System.out.println(""+(++count)+"."+mutatedProtein.getGeneSymbol());
+            Set<Hotspot> hotspots;
+            try {
+                hotspots = hd.detectHotspots(mutatedProtein);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                continue;
+            }
             for (Hotspot hotspot : hotspots) {
                 if (hotspot.getPValue()<=params.getPValueThreshold()) {
                     hotspot.setId(++idHotspot);

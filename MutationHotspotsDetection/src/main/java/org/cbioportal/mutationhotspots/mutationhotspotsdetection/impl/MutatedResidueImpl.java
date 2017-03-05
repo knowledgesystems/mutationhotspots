@@ -98,6 +98,7 @@ public class MutatedResidueImpl implements MutatedResidue {
                 .append(residue)
                 .append("\t")
                 .append(".") //score
+                .append("\t")
                 .append(pvalue)
                 .append("\t")
                 .append(".") //qvalue

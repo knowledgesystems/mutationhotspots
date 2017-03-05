@@ -37,7 +37,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ProteinSt
  */
 public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
     
-    public ProteinStructureHotspotDetective(HotspotDetectiveParameters parameters) throws HotspotException {
+    public ProteinStructureHotspotDetective(HotspotDetectiveParameters parameters) {
         super(parameters);
     }
     

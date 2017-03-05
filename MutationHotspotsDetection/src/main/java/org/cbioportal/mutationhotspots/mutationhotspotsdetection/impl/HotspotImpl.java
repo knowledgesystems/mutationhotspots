@@ -127,7 +127,7 @@ public class HotspotImpl implements Hotspot {
         StringBuilder sb = new StringBuilder();
         sb.append(protein.getGeneSymbol()).append(" ");
         
-        String sequence = protein.getSequence();
+//        String sequence = protein.getSequence();
         Map<Integer, Set<Mutation>> mapResidueMuations = getMapResidueMutations();
         for (Integer res : residues) {
             Set<Mutation> muts = mapResidueMuations.get(res);
@@ -137,9 +137,9 @@ public class HotspotImpl implements Hotspot {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (aa==null&&sequence!=null&&sequence.length()>=res) {
-                aa = sequence.substring(res-1,res);
-            }
+//            if (aa==null&&sequence!=null&&sequence.length()>=res) {
+//                aa = sequence.substring(res-1,res);
+//            }
             if (aa!=null) {
                 sb.append(aa);
             }

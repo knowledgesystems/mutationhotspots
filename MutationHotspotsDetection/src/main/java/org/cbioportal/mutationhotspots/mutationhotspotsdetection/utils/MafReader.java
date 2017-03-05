@@ -30,7 +30,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinImp
  */
 public final class MafReader {
     
-    private static final String HEADER_GENE = "Hugo_Symbol";
+    private static final String HEADER_GENE_SYMBOL = "Hugo_Symbol";
     private static final String HEADER_GENE_ID = "Gene";
     private static final String HEADER_TRANSCRIPT_ID = "Transcript_ID";
     private static final String HEADER_PROTEIN_ID = "ENSP";
@@ -40,16 +40,15 @@ public final class MafReader {
     private static final String HEADER_PROTEIN_CHANGE = "HGVSp_Short";
     private static final String HEADER_PATIENT = "Tumor_Sample_Barcode";
     
-    
-    public static Collection<MutatedProtein> readMaf(String dirMaf, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
-        return readMaf(new File(dirMaf), mutationTypeFilter, proteins);
+    public static Collection<MutatedProtein> readMaf(String dirMaf, Map<String,Set<String>> filter, Map<String, Protein> proteins) throws IOException {
+        return readMaf(new File(dirMaf), filter, proteins);
     }
     
-    public static Collection<MutatedProtein> readMaf(File mafFile, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
-        return readMaf(new FileInputStream(mafFile), mutationTypeFilter, proteins);
+    public static Collection<MutatedProtein> readMaf(File mafFile, Map<String,Set<String>> filter, Map<String, Protein> proteins) throws IOException {
+        return readMaf(new FileInputStream(mafFile), filter, proteins);
     }
     
-    public static Collection<MutatedProtein> readMaf(InputStream mafIS, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
+    public static Collection<MutatedProtein> readMaf(InputStream mafIS, Map<String,Set<String>> filter, Map<String, Protein> proteins) throws IOException {
         Map<String,MutatedProtein> mutatedProteins = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(mafIS))) {
             String line = br.readLine();
@@ -60,11 +59,22 @@ public final class MafReader {
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split("\t");
                 
-                String mutationType = parts[headers.get(HEADER_MUTATION_TYPE)];
-                if (!mutationTypeFilter.contains(mutationType)) {
+                boolean include = true;
+                for (Map.Entry<String,Set<String>> entry : filter.entrySet()) {
+                    String column = entry.getKey();
+                    Set<String> valuesFilter = entry.getValue();
+                    int i = headers.get(column);
+                    String v = parts[i];
+                    if (!valuesFilter.contains(v)) {
+                        include = false;
+                        break;
+                    }
+                }
+                if (!include) {
                     continue;
                 }
                 
+                String mutationType = parts[headers.get(HEADER_MUTATION_TYPE)];
                 int proteinStart = -1;
                 int proteinEnd = -1;
                 
@@ -95,16 +105,28 @@ public final class MafReader {
                 
                 String patient = parts[headers.get(HEADER_PATIENT)];
                 String proteinId = parts[headers.get(HEADER_PROTEIN_ID)];
+                String uniprot = parts[headers.get(HEADER_UNIPROT)];
+                String geneSymbol = parts[headers.get(HEADER_GENE_SYMBOL)];
+                String geneId = parts[headers.get(HEADER_GENE_ID)];
+                String transcriptId = parts[headers.get(HEADER_TRANSCRIPT_ID)];
                 
                 MutatedProtein mutatedProtein = mutatedProteins.get(proteinId);
                 if (mutatedProtein==null) {
                     Protein protein = proteins.get(proteinId);
                     if (protein == null) {
                         System.err.println("Couldn't fine "+proteinId);
-                        continue;
+                        
+                        protein = new ProteinImpl();
+                        protein.setGeneId(geneId);
+                        protein.setGeneSymbol(geneSymbol);
+                        protein.setProteinId(proteinId);
+                        protein.setTranscriptId(transcriptId);
                     }
                     
+                    protein.setUniprotAcc(uniprot);
+                    
                     mutatedProtein = new MutatedProteinImpl(protein);
+                    
                     mutatedProteins.put(proteinId, mutatedProtein);
                 }
                 

@@ -30,6 +30,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedPro
 import org.genomenexus.g2s.client.ApiException;
 import org.genomenexus.g2s.client.api.AlignmentApi;
 import org.genomenexus.g2s.client.api.HumanEnsemblApi;
+import org.genomenexus.g2s.client.api.UniprotApi;
 import org.genomenexus.g2s.client.model.Alignment;
 import org.genomenexus.g2s.client.model.ResiduePresent;
 
@@ -44,6 +45,7 @@ public final class ProteinStructureUtils {
     }
     
     private final HumanEnsemblApi g2sEmsemblApi;
+    private final UniprotApi g2sUniprotApi;
     private final AlignmentApi g2sAlignmentApi;
 
     private ProteinStructureUtils() {        
@@ -58,6 +60,7 @@ public final class ProteinStructureUtils {
         StructureIO.setAtomCache(atomCache);
         
         g2sEmsemblApi = new HumanEnsemblApi();
+        g2sUniprotApi = new UniprotApi();
         g2sAlignmentApi = new AlignmentApi();
     }
     
@@ -66,11 +69,15 @@ public final class ProteinStructureUtils {
         Map<MutatedProtein3D, ContactMap> contactMaps = new HashMap<>();
         Map<MutatedProtein3D, List<Alignment>> mapAlignments = getAlignments(mutatedProtein, identpThreshold);
         mapAlignments.forEach((protein3D, alignments)->{
-            System.out.println("calculating contact map for "+protein3D.getPdbId()+"."+protein3D.getPdbChain());
-            OneToOneMap<Integer, Integer> pdbSeqResidueMapping = getPdbSeqResidueMapping(alignments);
-            Map<Integer, Set<Integer>> pdbContactMap = getPdbContactMap(protein3D.getPdbId(), protein3D.getPdbChain(), distanceThresholdClosestAtoms);
-            ContactMap contactMap = getContactMap(pdbContactMap, pdbSeqResidueMapping, mutatedProtein.getLength());
-            contactMaps.put(protein3D, contactMap);
+            try {
+//                System.out.println("calculating contact map for "+protein3D.getPdbId()+"."+protein3D.getPdbChain());
+                OneToOneMap<Integer, Integer> pdbSeqResidueMapping = getPdbSeqResidueMapping(alignments);
+                Map<Integer, Set<Integer>> pdbContactMap = getPdbContactMap(protein3D.getPdbId(), protein3D.getPdbChain(), distanceThresholdClosestAtoms);
+                ContactMap contactMap = getContactMap(pdbContactMap, pdbSeqResidueMapping, mutatedProtein.getLength());
+                contactMaps.put(protein3D, contactMap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         return contactMaps;
     }
@@ -159,6 +166,9 @@ public final class ProteinStructureUtils {
         
         try {
             List<Alignment> alignments = g2sEmsemblApi.getPdbAlignmentByEnsemblIdUsingGET1(mutatedProtein.getProteinId());
+            if (alignments == null) {
+                alignments = g2sUniprotApi.getPdbAlignmentByUniprotIdUsingGET1(mutatedProtein.getUniprotAcc());
+            }
             
             alignments.forEach((alignment) -> {
                 double identp = 100.0 * alignment.getIdentity() / (alignment.getSeqTo() - alignment.getSeqFrom() + 1);
