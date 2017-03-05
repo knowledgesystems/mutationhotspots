@@ -18,7 +18,7 @@ public class DecoySignificanceTest {
     
     private final int detectStop = 10;
     private final int nThread = 100;
-    private final int nMaxDecoysPerThread = 100;
+    private final int nMaxDecoysPerThread = 1000;
     private final List<DecoyGenerator> decoyGenerators;
 
     public DecoySignificanceTest(int[] counts, int left, int right) {

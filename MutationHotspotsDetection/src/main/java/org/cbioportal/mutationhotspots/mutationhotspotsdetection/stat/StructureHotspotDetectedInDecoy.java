@@ -5,7 +5,7 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat;
 
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ContactMap;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
 
 /**
  *

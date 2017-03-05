@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils;
+package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
 /**
  *
@@ -13,7 +13,7 @@ public class ContactMap {
     private boolean[][] contact;
     private int proteinLeft, proteinRight;
 
-    ContactMap(int len) {
+    public ContactMap(int len) {
         contact = new boolean[len+1][len+1];
     }
 

@@ -164,7 +164,7 @@ public final class SortedMafReader {
                 String[] poss = proteinPosition.split("/")[0].split("-");
                 proteinStart = Integer.parseInt(poss[0]);
                 if (poss.length==2) {
-                    proteinEnd = Integer.parseInt(parts[1]);
+                    proteinEnd = Integer.parseInt(poss[1]);
                 } else {
                     proteinEnd = proteinStart;
                 }

@@ -5,6 +5,7 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils;
 
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

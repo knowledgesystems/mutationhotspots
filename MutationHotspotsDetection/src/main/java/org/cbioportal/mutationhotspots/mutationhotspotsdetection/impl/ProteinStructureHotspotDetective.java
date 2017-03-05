@@ -24,7 +24,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DecoySignificanceTest;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DetectedInDecoy;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.StructureHotspotDetectedInDecoy;
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ContactMap;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ProteinStructureUtils;
 
 

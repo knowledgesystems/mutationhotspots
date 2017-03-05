@@ -5,6 +5,7 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils;
 
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
 import java.util.Map;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
