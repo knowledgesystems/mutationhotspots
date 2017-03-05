@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
@@ -49,7 +50,7 @@ public final class MafReader {
     }
     
     public static Collection<MutatedProtein> readMaf(InputStream mafIS, Map<String,Set<String>> filter, Map<String, Protein> proteins) throws IOException {
-        Map<String,MutatedProtein> mutatedProteins = new HashMap<>();
+        Map<String,MutatedProtein> mutatedProteins = new TreeMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(mafIS))) {
             String line = br.readLine();
             Map<String, Integer> headers = getHeaders(line);
