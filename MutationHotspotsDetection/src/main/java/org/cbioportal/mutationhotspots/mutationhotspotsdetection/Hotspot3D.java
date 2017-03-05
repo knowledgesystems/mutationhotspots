@@ -17,6 +17,4 @@ public interface Hotspot3D extends Hotspot {
      * @return 
      */
     public Set<Hotspot> getHotspots3D();
-    
-    public Set<MutatedProtein3D> getAllMutatedProteins();
 }

@@ -26,12 +26,14 @@ public class MutatedResidueImpl implements MutatedResidue {
     private int residue;
     private Set<Hotspot> hotspots;
     private double pvalue;
+    private double pvalueThreahold;
 
-    public MutatedResidueImpl(Protein protein, int residue) {
+    public MutatedResidueImpl(Protein protein, int residue, double pvalueThreahold) {
         this.protein = protein;
         this.residue = residue;
         hotspots = new HashSet<>();
         pvalue = 1.0;
+        this.pvalueThreahold = pvalueThreahold;
     }
 
     @Override
@@ -61,6 +63,10 @@ public class MutatedResidueImpl implements MutatedResidue {
     @Override
     public double getPvalue() {
         return pvalue;
+    }
+    
+    public boolean isSignificant() {
+        return pvalue <= pvalueThreahold;
     }
 
     @Override
@@ -108,7 +114,7 @@ public class MutatedResidueImpl implements MutatedResidue {
             
         TreeSet<Integer> ids = new TreeSet<>();
         for (Hotspot hs : hotspots) {
-            if (hs.getId()>0) {
+            if (hs.getPValue()<=pvalueThreahold) {
                 ids.add(hs.getId());
             }
         }
@@ -121,14 +127,17 @@ public class MutatedResidueImpl implements MutatedResidue {
 //        for (Hotspot hs : hotspots) {
 //            if (hs.getId()>0) {
 //                Hotspot3D hs3D = Hotspot3D.class.cast(hs);
-//                Set<MutatedProtein3D> proteins = hs3D.getAllMutatedProteins();
-//                proteins.forEach((protein)->{
-//                    pdbChains.add(protein.getPdbId()+"."+protein.getPdbChain());
-//                });
+//                Set<Hotspot> phss = hs3D.getHotspots3D();
+//                for (Hotspot phs : phss) {
+//                    if (phs.getPValue()<=pvalueThreahold) {
+//                        MutatedProtein3D p3d = MutatedProtein3D.class.cast(phs.getProtein());
+//                        pdbChains.add(p3d.getPdbId()+"."+p3d.getPdbChain());
+//                    }
+//                }
 //            }
 //        }
 //        if (!pdbChains.isEmpty()) {
-//            sb.append("; PDB_CHAIN=").append(StringUtils.join(pdbChains, ","));
+//            sb.append(";PDB_CHAIN=").append(StringUtils.join(pdbChains, ","));
 //        }
         
         return sb.toString();
