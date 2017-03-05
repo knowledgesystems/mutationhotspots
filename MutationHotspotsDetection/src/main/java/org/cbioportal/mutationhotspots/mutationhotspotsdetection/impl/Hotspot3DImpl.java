@@ -45,6 +45,16 @@ public class Hotspot3DImpl extends HotspotImpl implements Hotspot3D {
     public void addHotspots3D(Hotspot hotspot3D) {
         hotspots3D.add(hotspot3D);
     }
+
+    @Override
+    public Set<MutatedProtein3D> getAllMutatedProteins() {
+        Set<MutatedProtein3D> proteins = new HashSet<>();
+        for (Hotspot hs : hotspots3D) {
+            MutatedProtein3D protein = MutatedProtein3D.class.cast(hs.getProtein());
+            proteins.add(protein);
+        }
+        return proteins;
+    }
     
     @Override
     public String getLabel() {

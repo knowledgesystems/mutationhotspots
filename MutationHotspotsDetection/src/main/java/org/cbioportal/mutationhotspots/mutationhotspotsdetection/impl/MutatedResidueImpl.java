@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot3D;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedResidue;
 
@@ -104,7 +106,7 @@ public class MutatedResidueImpl implements MutatedResidue {
                 .append(".") //qvalue
                 ;
             
-        TreeSet<Integer> ids = new TreeSet<Integer>();
+        TreeSet<Integer> ids = new TreeSet<>();
         for (Hotspot hs : hotspots) {
             if (hs.getId()>0) {
                 ids.add(hs.getId());
@@ -114,6 +116,20 @@ public class MutatedResidueImpl implements MutatedResidue {
         if (!ids.isEmpty()) {
             sb.append("\tCLUSTER_ID=").append(StringUtils.join(ids, ","));
         }
+        
+//        TreeSet<String> pdbChains = new TreeSet<>();
+//        for (Hotspot hs : hotspots) {
+//            if (hs.getId()>0) {
+//                Hotspot3D hs3D = Hotspot3D.class.cast(hs);
+//                Set<MutatedProtein3D> proteins = hs3D.getAllMutatedProteins();
+//                proteins.forEach((protein)->{
+//                    pdbChains.add(protein.getPdbId()+"."+protein.getPdbChain());
+//                });
+//            }
+//        }
+//        if (!pdbChains.isEmpty()) {
+//            sb.append("; PDB_CHAIN=").append(StringUtils.join(pdbChains, ","));
+//        }
         
         return sb.toString();
     }
