@@ -46,12 +46,12 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
     @Override
     protected Map<MutatedProtein,Set<Hotspot>> processSingleHotspotsOnAProtein(MutatedProtein protein,
             Map<Integer, Hotspot> mapResidueHotspot) throws HotspotException {
-        if (protein.getProteinLength()>5000) {
+        if (protein.getLength()>5000) {
             System.out.println("Protein longer than 5000, skipping..");
             return Collections.emptyMap();
         }
         
-        int[] counts = getMutationCountsOnProtein(mapResidueHotspot, protein.getProteinLength());
+        int[] counts = getMutationCountsOnProtein(mapResidueHotspot, protein.getLength());
         
         Map<SortedSet<Integer>,Set<Hotspot>> mapResiduesHotspots3D = new HashMap<>();
         Map<MutatedProtein3D,ContactMap> contactMaps = ProteinStructureUtils.getInstance().getContactMaps(protein,
@@ -61,7 +61,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
             MutatedProtein3D protein3D = entryContactMaps.getKey();
             ContactMap contactMap = entryContactMaps.getValue();
             
-            if (contactMap.getProteinRight()>protein.getProteinLength()) {
+            if (contactMap.getProteinRight()>protein.getLength()) {
                 System.err.println("\tMapped Protein resisue longer than protein length.");
                 continue;
             }

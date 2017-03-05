@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Objects;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 
 /**
@@ -16,12 +17,13 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
  * @author jgao
  */
 public class ProteinImpl implements Protein {
-    protected String geneSymbol;
-    protected String geneId;
-    protected String transcriptId;
-    protected String proteinId;
-    protected String uniprotAcc;
-    protected String proteinSequence;
+    private String geneSymbol;
+    private String geneId;
+    private String transcriptId;
+    private String proteinId;
+    private String uniprotAcc;
+    private String sequence;
+    private int length;
 
     public ProteinImpl() {
     }
@@ -32,17 +34,8 @@ public class ProteinImpl implements Protein {
         this.transcriptId = protein.getTranscriptId();
         this.proteinId = protein.getProteinId();
         this.uniprotAcc = protein.getUniprotAcc();
-        this.proteinSequence = protein.getProteinSequence();
-    }
-
-    public ProteinImpl(String gene, String uniprotAcc) {
-        this.geneSymbol = gene;
-        this.uniprotAcc = uniprotAcc;
-        try {
-            setUniProt();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        this.sequence = protein.getSequence();
+        this.length = protein.getLength();
     }
 
     @Override
@@ -93,21 +86,31 @@ public class ProteinImpl implements Protein {
     @Override
     public final void setUniprotAcc(String uniprotAcc) {
         this.uniprotAcc = uniprotAcc;
+        if (uniprotAcc != null) {
+            try {
+                setUniProt();
+            } catch (Exception ex) {
+            }
+        }
     }
 
     @Override
-    public final int getProteinLength() {
-        return proteinSequence.length();
+    public int getLength() {
+        return length;
+    }
+    
+    public void setLength(int length) {
+        this.length = length;
     }
 
     @Override
-    public String getProteinSequence() {
-        return proteinSequence;
+    public String getSequence() {
+        return sequence;
     }
 
     @Override
-    public void setProteinSequence(String proteinSequence) {
-        this.proteinSequence = proteinSequence;
+    public void setSequence(String proteinSequence) {
+        this.sequence = proteinSequence;
     }
 
     protected void setUniProt() throws Exception {
@@ -131,44 +134,38 @@ public class ProteinImpl implements Protein {
             while ((line = buf.readLine()) != null) {
                 sb.append(line.trim());
             }
-            this.proteinSequence = sb.toString();
+            this.sequence = sb.toString();
         }
     }
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + (this.geneSymbol != null ? this.geneSymbol.hashCode() : 0);
-        hash = 17 * hash + (this.uniprotAcc != null ? this.uniprotAcc.hashCode() : 0);
-        return hash;
+    public String toString() {
+        return geneSymbol + "_" + proteinId;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MutatedProteinImpl other = (MutatedProteinImpl) obj;
-        if (this.geneSymbol != other.geneSymbol && (this.geneSymbol == null || !this.geneSymbol.equals(other.geneSymbol))) {
-            return false;
-        }
-        if ((this.uniprotAcc == null) ? (other.uniprotAcc != null) : !this.uniprotAcc.equals(other.uniprotAcc)) {
+        final ProteinImpl other = (ProteinImpl) obj;
+        if (!Objects.equals(this.proteinId, other.proteinId)) {
             return false;
         }
         return true;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(geneSymbol);
-        if (uniprotAcc != null) {
-            sb.append("_").append(uniprotAcc);
-        }
-        return sb.toString();
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.proteinId);
+        return hash;
     }
     
 }

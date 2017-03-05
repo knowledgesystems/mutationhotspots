@@ -23,6 +23,7 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
  * @author jgao
  */
 public class HotspotImpl implements Hotspot {
+    private int id;
     private MutatedProtein protein;
     private SortedSet<Integer> residues;
     private Set<Mutation> mutations;
@@ -57,6 +58,14 @@ public class HotspotImpl implements Hotspot {
             }
             this.pvalue = Double.NaN;
         }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     /**
@@ -118,7 +127,7 @@ public class HotspotImpl implements Hotspot {
         StringBuilder sb = new StringBuilder();
         sb.append(protein.getGeneSymbol()).append(" ");
         
-        String sequence = protein.getProteinSequence();
+        String sequence = protein.getSequence();
         Map<Integer, Set<Mutation>> mapResidueMuations = getMapResidueMutations();
         for (Integer res : residues) {
             Set<Mutation> muts = mapResidueMuations.get(res);
@@ -131,7 +140,9 @@ public class HotspotImpl implements Hotspot {
             if (aa==null&&sequence!=null&&sequence.length()>=res) {
                 aa = sequence.substring(res-1,res);
             }
-            sb.append(aa);
+            if (aa!=null) {
+                sb.append(aa);
+            }
             sb.append(res.toString());
             sb.append("(").append(muts==null?0:muts.size()).append(");");
         }
@@ -183,11 +194,11 @@ public class HotspotImpl implements Hotspot {
     public double getPValue() {
         if (Double.isNaN(pvalue)) {
             int hotspotLength = residues.size();
-            int proteinLength = protein.getProteinLength();
+            int proteinLength = protein.getLength();
             
             if (proteinLength<=0) {
                 System.err.println("Protein length is not available for "+protein.getGeneSymbol()
-                        +"("+protein.getUniprotAcc()+")");
+                        +"("+protein.getProteinId()+")");
                 return Double.NaN;
             }
 

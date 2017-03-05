@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Mutation;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedProteinImpl;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutationImpl;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinImpl;
@@ -40,15 +41,15 @@ public final class MafReader {
     private static final String HEADER_PATIENT = "Tumor_Sample_Barcode";
     
     
-    public static Collection<MutatedProtein> readMaf(String dirMaf, Set<String> mutationTypeFilter) throws IOException {
-        return readMaf(new File(dirMaf), mutationTypeFilter);
+    public static Collection<MutatedProtein> readMaf(String dirMaf, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
+        return readMaf(new File(dirMaf), mutationTypeFilter, proteins);
     }
     
-    public static Collection<MutatedProtein> readMaf(File mafFile, Set<String> mutationTypeFilter) throws IOException {
-        return readMaf(new FileInputStream(mafFile), mutationTypeFilter);
+    public static Collection<MutatedProtein> readMaf(File mafFile, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
+        return readMaf(new FileInputStream(mafFile), mutationTypeFilter, proteins);
     }
     
-    public static Collection<MutatedProtein> readMaf(InputStream mafIS, Set<String> mutationTypeFilter) throws IOException {
+    public static Collection<MutatedProtein> readMaf(InputStream mafIS, Set<String> mutationTypeFilter, Map<String, Protein> proteins) throws IOException {
         Map<String,MutatedProtein> mutatedProteins = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(mafIS))) {
             String line = br.readLine();
@@ -93,21 +94,23 @@ public final class MafReader {
                 }
                 
                 String patient = parts[headers.get(HEADER_PATIENT)];
-                String gene = parts[headers.get(HEADER_GENE)];
-                String geneId = parts[headers.get(HEADER_GENE_ID)];
-                String transcriptId = parts[headers.get(HEADER_TRANSCRIPT_ID)];
                 String proteinId = parts[headers.get(HEADER_PROTEIN_ID)];
-                String uniprot = parts[headers.get(HEADER_UNIPROT)];
                 
-                MutatedProtein protein = mutatedProteins.get(uniprot);
-                if (protein==null) {
-                    protein = new MutatedProteinImpl(new ProteinImpl(gene, uniprot));
-                    mutatedProteins.put(uniprot, protein);
+                MutatedProtein mutatedProtein = mutatedProteins.get(proteinId);
+                if (mutatedProtein==null) {
+                    Protein protein = proteins.get(proteinId);
+                    if (protein == null) {
+                        System.err.println("Couldn't fine "+proteinId);
+                        continue;
+                    }
+                    
+                    mutatedProtein = new MutatedProteinImpl(protein);
+                    mutatedProteins.put(proteinId, mutatedProtein);
                 }
                 
-                Mutation mu = new MutationImpl(protein, mutationType, proteinStart, proteinEnd, proteinChange, patient);
+                Mutation mu = new MutationImpl(mutatedProtein, mutationType, proteinStart, proteinEnd, proteinChange, patient);
                 
-                protein.addMutation(mu);
+                mutatedProtein.addMutation(mu);
             }
         }
         

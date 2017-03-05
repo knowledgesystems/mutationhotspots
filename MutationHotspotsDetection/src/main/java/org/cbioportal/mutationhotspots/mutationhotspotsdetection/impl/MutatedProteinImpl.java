@@ -19,6 +19,11 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 public class MutatedProteinImpl extends ProteinImpl implements MutatedProtein {
     private List<Mutation> mutations;
     
+    public MutatedProteinImpl() {
+        super();
+        this.mutations = new ArrayList<>();
+    }
+    
     public MutatedProteinImpl(Protein protein) {
         super(protein);
         this.mutations = new ArrayList<>();

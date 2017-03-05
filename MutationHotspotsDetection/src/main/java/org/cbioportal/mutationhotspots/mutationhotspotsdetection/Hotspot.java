@@ -9,6 +9,10 @@ import java.util.SortedSet;
  * @author jgao
  */
 public interface Hotspot {
+    
+    public int getId();
+    
+    public void setId(int id);
    
     /**
      * Merge with another hotspot

@@ -19,9 +19,9 @@ public interface Protein {
 
     String getProteinId();
 
-    int getProteinLength();
+    int getLength();
 
-    String getProteinSequence();
+    String getSequence();
 
     String getTranscriptId();
 
@@ -33,7 +33,9 @@ public interface Protein {
 
     void setProteinId(String proteinId);
 
-    void setProteinSequence(String proteinSequence);
+    void setLength(int length);
+    
+    void setSequence(String proteinSequence);
 
     void setTranscriptId(String transcriptId);
 
