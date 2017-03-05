@@ -50,7 +50,7 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
      * @param hotspots
      * @return 
      */
-    protected abstract Map<MutatedProtein, Set<Hotspot>> processSingleHotspotsOnAProtein(MutatedProtein protein, Map<Integer, Hotspot> mapResidueHotspot) throws HotspotException;
+    protected abstract Set<Hotspot> processSingleHotspotsOnAProtein(MutatedProtein protein, Map<Integer, Hotspot> mapResidueHotspot) throws HotspotException;
    
     private Map<Integer, Hotspot> getSingleHotspots(MutatedProtein protein) {
         Map<Integer, Hotspot> map = new HashMap<>();
@@ -80,7 +80,7 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
     @Override
     public Set<Hotspot> detectHotspots(MutatedProtein protein) throws HotspotException {
         Map<Integer, Hotspot> mapResidueHotspot = getSingleHotspots(protein);
-        return recordHotspots(protein, mapResidueHotspot);
+        return processSingleHotspotsOnAProtein(protein, mapResidueHotspot);
     }
     
     private void removeNonrecurrentHotspots(Map<Integer, Hotspot> mapResidueHotspot) {
@@ -91,34 +91,6 @@ public abstract class AbstractHotspotDetective implements HotspotDetective {
                 it.remove();
             }
         }
-    }
-    
-    private Set<Hotspot> recordHotspots(MutatedProtein protein, Map<Integer, Hotspot> mapResidueHotspot) throws HotspotException {
-        if (parameters.getPrefilterThresholdSamplesOnSingleResidue()>1) {
-            removeNonrecurrentHotspots(mapResidueHotspot);
-        }
-
-
-        // process all hotspots
-        Set<Hotspot> hotspots = new HashSet<>();
-        Map<MutatedProtein, Set<Hotspot>> mapHotspots = processSingleHotspotsOnAProtein(protein, mapResidueHotspot);
-        mapHotspots.entrySet().stream().map((entry) -> entry.getValue()).forEachOrdered((hotspotsOnAProtein) -> {
-            //            if (!hotspotsOnAProtein.isEmpty()) {
-            //                mutatedProtein.setNumberOfMutations(getNumberOfAllMutationOnProtein(hotspotsOnAProtein)); // only have to set once
-            //            }
-            double p = parameters.getPValueThreshold();
-            if (p>0 && p<1) {
-                for (Hotspot hotspot : hotspotsOnAProtein) {
-                    if (hotspot.getPValue()<=p) {
-                        hotspots.add(hotspot);
-                    }
-                }
-            } else {
-                hotspots.addAll(hotspotsOnAProtein);
-            }
-        });
-        
-        return hotspots;
     }
     
     protected int getNumberOfAllMutationOnProtein(Collection<Hotspot> hotspotsOnAProtein) {

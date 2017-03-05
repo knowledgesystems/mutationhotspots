@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
+import org.apache.commons.lang.StringUtils;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedResidue;
@@ -99,15 +101,18 @@ public class MutatedResidueImpl implements MutatedResidue {
                 .append(pvalue)
                 .append("\t")
                 .append(".") //qvalue
-                .append("\t")
-                .append("CLUSTER_ID=")
                 ;
-                
+            
+        TreeSet<Integer> ids = new TreeSet<Integer>();
         for (Hotspot hs : hotspots) {
-            sb.append(hs.getId()).append(",");
+            if (hs.getId()>0) {
+                ids.add(hs.getId());
+            }
         }
         
-        sb.deleteCharAt(sb.length()-1);
+        if (!ids.isEmpty()) {
+            sb.append("\tCLUSTER_ID=").append(StringUtils.join(ids, ","));
+        }
         
         return sb.toString();
     }

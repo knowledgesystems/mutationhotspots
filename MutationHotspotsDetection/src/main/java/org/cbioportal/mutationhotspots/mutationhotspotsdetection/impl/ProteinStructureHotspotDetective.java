@@ -44,11 +44,11 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
      * @return
      */
     @Override
-    protected Map<MutatedProtein,Set<Hotspot>> processSingleHotspotsOnAProtein(MutatedProtein protein,
+    protected Set<Hotspot> processSingleHotspotsOnAProtein(MutatedProtein protein,
             Map<Integer, Hotspot> mapResidueHotspot) throws HotspotException {
         if (protein.getLength()>5000) {
             System.out.println("Protein longer than 5000, skipping..");
-            return Collections.emptyMap();
+            return Collections.emptySet();
         }
         
         int[] counts = getMutationCountsOnProtein(mapResidueHotspot, protein.getLength());
@@ -114,7 +114,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
         }
         
         if (mapResiduesHotspots3D.isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptySet();
         }
         
         Set<Hotspot> hotspots3D = new HashSet<Hotspot>(); 
@@ -126,7 +126,7 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
             hotspots3D.add(hotspot3D);
         }
         
-        return Collections.singletonMap(protein, hotspots3D);
+        return hotspots3D;
     }
     
     protected int[] getMutationCountsOnProtein(Map<Integer, Hotspot> mapResidueHotspot, int len) {

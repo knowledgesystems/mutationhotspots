@@ -39,7 +39,7 @@ public class HotspotMain {
         
         HotspotDetectiveParameters params = HotspotDetectiveParameters.getDefaultHotspotDetectiveParameters();
         params.setIdentpThresholdFor3DHotspots(100.0);
-        params.setPValueThreshold(1.0);
+        params.setPValueThreshold(0.1);
         
         HotspotDetective hd = new ProteinStructureHotspotDetective(params);
                 
@@ -47,7 +47,9 @@ public class HotspotMain {
         for (MutatedProtein mutatedProtein : mutatedProteins) {
             Set<Hotspot> hotspots = hd.detectHotspots(mutatedProtein);
             for (Hotspot hotspot : hotspots) {
-                hotspot.setId(++idHotspot);
+                if (hotspot.getPValue()<=params.getPValueThreshold()) {
+                    hotspot.setId(++idHotspot);
+                }
                 System.out.println(hotspot.getLabel());
             }
             
