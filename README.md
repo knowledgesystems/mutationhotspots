@@ -11,3 +11,5 @@ Binary JAR file is available in [releases](https://github.com/knowledgesystems/m
 Here is [an example input MAF file](https://github.com/knowledgesystems/mutationhotspots/blob/1.0.0/MutationHotspotsDetection/src/main/resources/data/example.maf)
 
 Either `ENSP` or `SWISSPROT` should have data for each mutation. `CODE` is not required. All other columns are required.
+
+**IMPORTANT**: The mutations in the input MAF should be pre-sorted by `ENSP` or `SWISSPROT` column.
