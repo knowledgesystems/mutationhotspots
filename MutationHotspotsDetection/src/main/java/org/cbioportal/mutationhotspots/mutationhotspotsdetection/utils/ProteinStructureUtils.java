@@ -29,9 +29,8 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedProtein3DImpl;
 import org.genomenexus.g2s.client.ApiException;
-import org.genomenexus.g2s.client.api.AlignmentApi;
-import org.genomenexus.g2s.client.api.HumanEnsemblApi;
-import org.genomenexus.g2s.client.api.UniprotApi;
+import org.genomenexus.g2s.client.api.GetAlignmentsApi;
+import org.genomenexus.g2s.client.api.GetResidueMappingApi;
 import org.genomenexus.g2s.client.model.Alignment;
 import org.genomenexus.g2s.client.model.ResiduePresent;
 
@@ -45,9 +44,8 @@ public final class ProteinStructureUtils {
         return instance;
     }
     
-    private final HumanEnsemblApi g2sEmsemblApi;
-    private final UniprotApi g2sUniprotApi;
-    private final AlignmentApi g2sAlignmentApi;
+    private final GetAlignmentsApi g2sGetAlignmentsApi;
+    private final GetResidueMappingApi g2sGetResidueMappingApi;
 
     private ProteinStructureUtils() {        
         AtomCache atomCache = new AtomCache();
@@ -60,9 +58,8 @@ public final class ProteinStructureUtils {
         atomCache.setFileParsingParams(params);
         StructureIO.setAtomCache(atomCache);
         
-        g2sEmsemblApi = new HumanEnsemblApi();
-        g2sUniprotApi = new UniprotApi();
-        g2sAlignmentApi = new AlignmentApi();
+        g2sGetAlignmentsApi = new GetAlignmentsApi();
+        g2sGetResidueMappingApi = new GetResidueMappingApi();
     }
     
     public Map<MutatedProtein3D, ContactMap> getContactMaps(MutatedProtein mutatedProtein, 
@@ -166,27 +163,28 @@ public final class ProteinStructureUtils {
         Map<MutatedProtein3D, List<Alignment>> map = new HashMap<>();
         
         try {
-            List<Alignment> alignments = g2sEmsemblApi.getPdbAlignmentByEnsemblIdUsingGET1(mutatedProtein.getProteinId());
+            List<Alignment> alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("ensembl", mutatedProtein.getProteinId());
             if (alignments == null) {
-                alignments = g2sUniprotApi.getPdbAlignmentByUniprotIdUsingGET1(mutatedProtein.getUniprotAcc());
+                alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("uniprot", mutatedProtein.getUniprotAcc());
             }
             
-            alignments.forEach((alignment) -> {
-                double identp = 100.0 * alignment.getIdentity() / (alignment.getSeqTo() - alignment.getSeqFrom() + 1);
-                if (identp >= identpThreshold) {
-                    MutatedProtein3DImpl protein3D = new MutatedProtein3DImpl(mutatedProtein);
-                    protein3D.setPdbId(alignment.getPdbId());
-                    protein3D.setPdbChain(alignment.getChain());
+            if (alignments != null) {
+                alignments.forEach((alignment) -> {
+                    double identp = 100.0 * alignment.getIdentity() / (alignment.getSeqTo() - alignment.getSeqFrom() + 1);
+                    if (identp >= identpThreshold) {
+                        MutatedProtein3DImpl protein3D = new MutatedProtein3DImpl(mutatedProtein);
+                        protein3D.setPdbId(alignment.getPdbId());
+                        protein3D.setPdbChain(alignment.getChain());
 
-                    List<Alignment> list = map.get(protein3D);
-                    if (list==null) {
-                        list = new ArrayList<>();
-                        map.put(protein3D, list);
+                        List<Alignment> list = map.get(protein3D);
+                        if (list==null) {
+                            list = new ArrayList<>();
+                            map.put(protein3D, list);
+                        }
+                        list.add(alignment);
                     }
-                    list.add(alignment);
-                }
-            });
-            
+                });
+            }
         } catch (ApiException ex) {
             System.err.println("Could not retrieve alignments for "+mutatedProtein.getProteinId());
             System.err.println(ex.getMessage());
@@ -209,7 +207,7 @@ public final class ProteinStructureUtils {
         for (Alignment a : alignments) {
             List<ResiduePresent> residues;
             try {
-                residues = g2sAlignmentApi.getResidueMappingByAlignmentIdUsingGET(a.getAlignmentId());
+                residues = g2sGetResidueMappingApi.getResidueMappingByAlignmentIdUsingGET(a.getAlignmentId());
             } catch (ApiException ex) {
                 residues = Collections.emptyList();
                 System.err.println("couldn't get residue mapping for alignment "+a.getAlignmentId());

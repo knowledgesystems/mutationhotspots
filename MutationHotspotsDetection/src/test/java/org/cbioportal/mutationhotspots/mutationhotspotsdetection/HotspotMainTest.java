@@ -5,13 +5,20 @@
  */
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+import static org.cbioportal.mutationhotspots.mutationhotspotsdetection.HotspotMain.process;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.EnsemblUtils;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.SortedMafReader;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -44,10 +51,20 @@ public class HotspotMainTest {
     @Test
     public void testMain() throws IOException, HotspotException {
         System.out.println("main");
-        String[] args = null;
-        HotspotMain.main(args);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        InputStream isFa = HotspotMain.class.getResourceAsStream("/data/Homo_sapiens.GRCh38.pep.all.fa");
+        Map<String, Protein> proteins = EnsemblUtils.readFasta(isFa);
+        
+        InputStream isMaf = HotspotMain.class.getResourceAsStream("/data/example.maf");
+        
+        Map<String, Set<String>> mafFilter = Collections.singletonMap("Variant_Classification", Collections.singleton("Missense_Mutation"));
+        
+        SortedMafReader mafReader = new SortedMafReader(isMaf, mafFilter, proteins);
+        
+        File temp = File.createTempFile("tempfile", ".tmp");
+        
+        process(mafReader, HotspotDetectiveParameters.getDefaultHotspotDetectiveParameters(), temp);
+        
+        System.out.println(temp.getAbsolutePath());
     }
     
 }

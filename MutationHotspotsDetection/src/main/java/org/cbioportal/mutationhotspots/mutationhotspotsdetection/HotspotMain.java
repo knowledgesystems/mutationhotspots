@@ -6,6 +6,7 @@
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,7 +58,11 @@ public class HotspotMain {
     }
     
     static void process(SortedMafReader mafReader, HotspotDetectiveParameters params, String dirFile) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(dirFile))) {
+        process(mafReader, params, new File(dirFile));
+    }
+    
+    static void process(SortedMafReader mafReader, HotspotDetectiveParameters params, File file) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.append("gene\ttranscript\tprotein_change\tscore\tpvalue\tqvalue\tinfo\n");
 
             HotspotDetective hd = new ProteinStructureHotspotDetective(params);
