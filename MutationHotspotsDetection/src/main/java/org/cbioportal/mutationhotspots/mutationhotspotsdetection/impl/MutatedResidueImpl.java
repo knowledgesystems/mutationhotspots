@@ -123,22 +123,22 @@ public class MutatedResidueImpl implements MutatedResidue {
             sb.append("\tCLUSTER_ID=").append(StringUtils.join(ids, ","));
         }
         
-//        TreeSet<String> pdbChains = new TreeSet<>();
-//        for (Hotspot hs : hotspots) {
-//            if (hs.getId()>0) {
-//                Hotspot3D hs3D = Hotspot3D.class.cast(hs);
-//                Set<Hotspot> phss = hs3D.getHotspots3D();
-//                for (Hotspot phs : phss) {
-//                    if (phs.getPValue()<=pvalueThreahold) {
-//                        MutatedProtein3D p3d = MutatedProtein3D.class.cast(phs.getProtein());
-//                        pdbChains.add(p3d.getPdbId()+"."+p3d.getPdbChain());
-//                    }
-//                }
-//            }
-//        }
-//        if (!pdbChains.isEmpty()) {
-//            sb.append(";PDB_CHAIN=").append(StringUtils.join(pdbChains, ","));
-//        }
+        TreeSet<String> pdbChains = new TreeSet<>();
+        for (Hotspot hs : hotspots) {
+            if (hs.getId()>0) {
+                Hotspot3D hs3D = Hotspot3D.class.cast(hs);
+                Set<Hotspot> phss = hs3D.getHotspots3D();
+                for (Hotspot phs : phss) {
+                    if (phs.getPValue()<=pvalueThreahold) {
+                        MutatedProtein3D p3d = MutatedProtein3D.class.cast(phs.getProtein());
+                        pdbChains.add(p3d.getPdbId()+"."+p3d.getPdbChain());
+                    }
+                }
+            }
+        }
+        if (!pdbChains.isEmpty()) {
+            sb.append(";PDB_CHAIN=").append(StringUtils.join(pdbChains, ","));
+        }
         
         return sb.toString();
     }

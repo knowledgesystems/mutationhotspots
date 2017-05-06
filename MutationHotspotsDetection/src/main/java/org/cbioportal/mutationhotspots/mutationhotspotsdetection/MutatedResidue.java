@@ -6,8 +6,6 @@
 package org.cbioportal.mutationhotspots.mutationhotspotsdetection;
 
 import java.util.Set;
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Hotspot;
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.Protein;
 
 /**
  *
