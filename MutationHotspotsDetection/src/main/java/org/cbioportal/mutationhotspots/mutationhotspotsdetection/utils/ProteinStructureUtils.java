@@ -164,7 +164,7 @@ public final class ProteinStructureUtils {
         
         try {
             List<Alignment> alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("ensembl", mutatedProtein.getProteinId());
-            if (alignments == null) {
+            if (alignments == null && mutatedProtein.getUniprotAcc()!=null) {
                 alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("uniprot", mutatedProtein.getUniprotAcc());
             }
             

@@ -114,9 +114,15 @@ public final class SortedMafReader {
         String parts[] = line.split("\t");
         
         String proteinId = parts[headers.get(HEADER_PROTEIN_ID)];
-        String uniprot = parts[headers.get(HEADER_UNIPROT)];
+        String uniprot = null;
+        if (headers.containsKey(HEADER_UNIPROT)) {
+            uniprot = parts[headers.get(HEADER_UNIPROT)];
+        }
         String geneSymbol = parts[headers.get(HEADER_GENE_SYMBOL)];
-        String geneId = parts[headers.get(HEADER_GENE_ID)];
+        String geneId = null;
+        if (headers.containsKey(HEADER_GENE_ID)) {
+            geneId = parts[headers.get(HEADER_GENE_ID)];
+        }
         String transcriptId = parts[headers.get(HEADER_TRANSCRIPT_ID)];
 
         Protein protein = proteins.get(proteinId);
