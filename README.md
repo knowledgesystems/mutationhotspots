@@ -6,9 +6,9 @@ Binary JAR file is available in [releases](https://github.com/knowledgesystems/m
 ## Usage
 
 
-`java -jar MutationHotspotsDetection-1.0.0.jar <input.maf> <output.results.txt>`
+`java -jar MutationHotspotsDetection-1.0.1.jar <input.maf> <output.results.txt>`
 
-Here is [an example input MAF file](https://github.com/knowledgesystems/mutationhotspots/blob/1.0.0/MutationHotspotsDetection/src/main/resources/data/example.maf)
+Here is [an example input MAF file](https://github.com/knowledgesystems/mutationhotspots/blob/1.0.1/MutationHotspotsDetection/src/main/resources/data/example.maf)
 
 Either `ENSP` or `SWISSPROT` should have data for each mutation. `CODE` is not required. All other columns are required.
 
