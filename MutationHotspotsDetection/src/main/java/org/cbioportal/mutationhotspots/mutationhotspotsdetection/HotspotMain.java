@@ -33,9 +33,8 @@ public class HotspotMain {
      */
     public static void main(String[] args) throws IOException {
 //        args = new String[] {
-//            "/Users/jgao/projects/tcga-pancan/filtering/example.maf",
-////            "/Users/jgao/projects/tcga-pancan/filtering/mc3.v0.2.8.PUBLIC.code.filtered.essential-cols.sorted.maf",
-//            "/Users/jgao/projects/tcga-pancan/filtering/example.results.txt"
+//            "/Users/jgao/projects/mutationhotspots/process/mda-mutaiton-list.txt",
+//            "/Users/jgao/projects/mutationhotspots/process/mda-mutaiton-list.output.txt"
 //        };
         
         InputStream isFa = HotspotMain.class.getResourceAsStream("/data/Homo_sapiens.GRCh38.pep.all.fa");

@@ -32,7 +32,7 @@ import org.genomenexus.g2s.client.ApiException;
 import org.genomenexus.g2s.client.api.GetAlignmentsApi;
 import org.genomenexus.g2s.client.api.GetResidueMappingApi;
 import org.genomenexus.g2s.client.model.Alignment;
-import org.genomenexus.g2s.client.model.ResiduePresent;
+import org.genomenexus.g2s.client.model.ResidueMapping;
 
 /**
  *
@@ -163,9 +163,10 @@ public final class ProteinStructureUtils {
         Map<MutatedProtein3D, List<Alignment>> map = new HashMap<>();
         
         try {
-            List<Alignment> alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("ensembl", mutatedProtein.getProteinId());
+            List<Alignment> alignments = g2sGetResidueMappingApi.postResidueMappingUsingPOST("ensembl", mutatedProtein.getProteinId(), null);
+            
             if (alignments == null && mutatedProtein.getUniprotAcc()!=null) {
-                alignments = g2sGetAlignmentsApi.getAlignmentUsingGET("uniprot", mutatedProtein.getUniprotAcc());
+                alignments = g2sGetResidueMappingApi.postResidueMappingUsingPOST("uniprot", mutatedProtein.getUniprotAcc(), null);
             }
             
             if (alignments != null) {
@@ -204,22 +205,16 @@ public final class ProteinStructureUtils {
         
         OneToOneMap<Integer, Integer> map = new OneToOneMap<Integer, Integer>();
         
-        for (Alignment a : alignments) {
-            List<ResiduePresent> residues;
-            try {
-                residues = g2sGetResidueMappingApi.getResidueMappingByAlignmentIdUsingGET(a.getAlignmentId());
-            } catch (ApiException ex) {
-                residues = Collections.emptyList();
-                System.err.println("couldn't get residue mapping for alignment "+a.getAlignmentId());
-            }
+        for (Alignment alignment : alignments) {
+            List<ResidueMapping> residueMapping = alignment.getResidueMapping();
             
-            for (ResiduePresent r : residues) {
-                if (!r.getInputName().equals(r.getResidueName())) {
+            for (ResidueMapping r : residueMapping) {
+                if (!r.getQueryAminoAcid().equals(r.getPdbAminoAcid())) {
                     continue;
                 }
                 
-                Integer iseq = r.getInputNum();
-                Integer ipdb = r.getResidueNum();
+                Integer iseq = r.getQueryPosition();
+                Integer ipdb = r.getPdbPosition();
                 
                 map.put(ipdb, iseq);
             }
