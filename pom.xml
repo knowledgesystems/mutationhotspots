@@ -5,12 +5,13 @@
     <artifactId>master</artifactId>
     <packaging>pom</packaging>
     <name>MutationHotspots Master</name>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>master maven module</description>
     <url>https://github.com/cBioPortal/mutationhotspots/</url>
 
     <modules>
         <module>MutationHotspotsDetection</module>
+        <module>g2s-client</module>
     </modules>
 
     <properties>
