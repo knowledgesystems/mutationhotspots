@@ -13,3 +13,9 @@ Here is [an example input MAF file](https://github.com/knowledgesystems/mutation
 Either `ENSP` or `SWISSPROT` should have data for each mutation. `CODE` is not required. All other columns are required.
 
 **IMPORTANT**: The mutations in the input MAF should be pre-sorted by `ENSP` or `SWISSPROT` column.
+
+## Citation
+
+Gao J, Chang MT, Johnsen HC, Gao SP, Sylvester BE, Sumer SO, Zhang H, Solit DB, Taylor BS, Schultz N, Sander C.
+__3D clusters of somatic mutations in cancer reveal numerous rare mutations as functional targets__.
+_Genome Med_. 2017 Jan 23;9(1):4. doi: 10.1186/s13073-016-0393-x.
