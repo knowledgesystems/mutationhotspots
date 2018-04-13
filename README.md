@@ -1,12 +1,12 @@
 # mutationhotspots
 Algorithms to detect mutational hotspots. Currently, MutationHotspotsDetection only supports detection of intra-chain hotspots in 3D protein structures.
 
-Binary JAR file is available in [releases](https://github.com/knowledgesystems/mutationhotspots/releases).
+Binary JAR file is available in [releases](https://github.com/knowledgesystems/mutationhotspots/releases/latest).
 
 ## Usage
 
 
-`java -jar MutationHotspotsDetection-1.0.1.jar <input.maf> <output.results.txt>`
+`java -jar MutationHotspotsDetection-1.1.0.jar <input.maf> <output.results.txt>`
 
 Here is [an example input MAF file](https://github.com/knowledgesystems/mutationhotspots/blob/1.0.1/MutationHotspotsDetection/src/main/resources/data/example.maf)
 
