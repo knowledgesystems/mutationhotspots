@@ -123,7 +123,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -137,7 +137,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -152,7 +152,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position (asynchronously)
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
@@ -253,7 +253,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -267,7 +267,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -282,7 +282,7 @@ public class GetResidueMappingApi {
      * Get PDB Residue Mapping by Protein Sequence and Residue position (asynchronously)
      * 
      * @param sequence Input Protein Sequence: ETGQSVNDPGNMSFVKETVDKLLKGYDIRLRPDFGGPP (required)
-     * @param positionList Input Residue Position e.g. 20 (optional)
+     * @param positionList Input Residue Positions e.g. 10,20 (optional)
      * @param paramList Default Blast Parameters:  Evalue&#x3D;1e-10,Wordsize&#x3D;3,Gapopen&#x3D;11,Gapextend&#x3D;1,  Matrix&#x3D;BLOSUM62,Comp_based_stats&#x3D;2, Threshold&#x3D;11,Windowsize&#x3D;40 (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
@@ -397,11 +397,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -413,11 +413,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -430,11 +430,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain (asynchronously)
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -548,11 +548,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -564,11 +564,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -581,11 +581,11 @@ public class GetResidueMappingApi {
     /**
      * Post Residue Mapping by ProteinId, PDBId and Chain (asynchronously)
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g.  ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
      * @param pdbId Input PDB Id e.g. 2fej (required)
      * @param chainId Input Chain e.g. A (required)
-     * @param positionList Input Residue Position e.g. 100 (Anynumber for hgvs); Return all residue mappings if none (optional)
+     * @param positionList Input Residue Positions e.g. 10,100 (Anynumber for hgvs); Return all residue mappings if none (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -687,9 +687,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -701,9 +701,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -716,9 +716,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId (asynchronously)
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -820,9 +820,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @return List&lt;Alignment&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -834,9 +834,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @return ApiResponse&lt;List&lt;Alignment&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
@@ -849,9 +849,9 @@ public class GetResidueMappingApi {
     /**
      * POST PDB Residue Mapping by ProteinId (asynchronously)
      * 
-     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs; hgvs38 (required)
-     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs:17:g.79478130C&gt;G; hgvs38:17:g.7676594T&gt;G (required)
-     * @param positionList Input Residue Position e.g. 100; Anynumber for hgvs; Return all residue mappings if none (optional)
+     * @param idType Input id_type: ensembl; uniprot; uniprot_isoform; hgvs-grch37; hgvs-grch38 (required)
+     * @param id Input id e.g. ensembl:ENSP00000484409.1/ENSG00000141510.16/ENST00000504290.5; uniprot:P04637/P53_HUMAN; uniprot_isoform:P04637_9/P53_HUMAN_9; hgvs-grch37:17:g.79478130C&gt;G; hgvs-grch38:17:g.7676594T&gt;G (required)
+     * @param positionList Input Residue Positions e.g. 10,100; Anynumber for hgvs; Return all residue mappings if none (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object

@@ -21,7 +21,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * ResidueMapping
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-05-23T09:13:49.555-04:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-04-13T08:44:01.010-04:00")
 public class ResidueMapping {
   @SerializedName("pdbAminoAcid")
   private String pdbAminoAcid = null;

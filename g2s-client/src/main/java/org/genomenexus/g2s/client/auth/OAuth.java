@@ -18,7 +18,7 @@ import org.genomenexus.g2s.client.Pair;
 import java.util.Map;
 import java.util.List;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2017-05-23T09:13:49.555-04:00")
+@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2018-04-13T08:44:01.010-04:00")
 public class OAuth implements Authentication {
   private String accessToken;
 

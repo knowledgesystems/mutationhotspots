@@ -5,7 +5,7 @@
     <artifactId>master</artifactId>
     <packaging>pom</packaging>
     <name>MutationHotspots Master</name>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <description>master maven module</description>
     <url>https://github.com/cBioPortal/mutationhotspots/</url>
 
