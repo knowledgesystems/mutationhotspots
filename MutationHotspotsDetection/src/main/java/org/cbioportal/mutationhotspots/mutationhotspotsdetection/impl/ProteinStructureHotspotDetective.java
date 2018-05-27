@@ -25,7 +25,8 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DecoySigni
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.DetectedInDecoy;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.stat.StructureHotspotDetectedInDecoy;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
-import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.ProteinStructureUtils;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.structure.ContactMapFromPDB;
+import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.structure.ProteinStructureContactMapCalculator;
 
 
 /**
@@ -54,15 +55,18 @@ public class ProteinStructureHotspotDetective extends AbstractHotspotDetective {
         int[] counts = getMutationCountsOnProtein(mapResidueHotspot, protein.getLength());
         
         Map<SortedSet<Integer>,Set<Hotspot>> mapResiduesHotspots3D = new HashMap<>();
-        Map<MutatedProtein3D,ContactMap> contactMaps = ProteinStructureUtils.getInstance().getContactMaps(protein,
+        Map<MutatedProtein3D,ContactMap> contactMaps = ProteinStructureContactMapCalculator.getPDBCalculator().getContactMaps(protein,
                 parameters.getIdentpThresholdFor3DHotspots(), parameters.getDistanceClosestAtomsThresholdFor3DHotspots());
+        contactMaps.putAll(ProteinStructureContactMapCalculator.getSwissModelCalculator().getContactMaps(protein,
+                parameters.getIdentpThresholdFor3DHotspots(), parameters.getDistanceClosestAtomsThresholdFor3DHotspots()));
+        
         int i = 0;
         for (Map.Entry<MutatedProtein3D, ContactMap> entryContactMaps : contactMaps.entrySet()) {
             MutatedProtein3D protein3D = entryContactMaps.getKey();
             ContactMap contactMap = entryContactMaps.getValue();
             
             if (contactMap.getProteinRight()>protein.getLength()) {
-                System.err.println("\tMapped Protein resisue longer than protein length.");
+                System.err.println("\tMapped Protein residue longer than protein length.");
                 continue;
             }
             

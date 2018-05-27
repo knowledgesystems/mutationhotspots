@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils;
+package org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.structure;
 
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.ContactMap;
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.MutatedProtein3D;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedProtein3DImpl;
 import org.genomenexus.g2s.client.ApiException;
-import org.genomenexus.g2s.client.api.GetAlignmentsApi;
 import org.genomenexus.g2s.client.api.GetResidueMappingApi;
 import org.genomenexus.g2s.client.model.Alignment;
 import org.genomenexus.g2s.client.model.ResidueMapping;
@@ -38,16 +37,11 @@ import org.genomenexus.g2s.client.model.ResidueMapping;
  *
  * @author jgao
  */
-public final class ProteinStructureUtils {
-    private static final ProteinStructureUtils instance = new ProteinStructureUtils();
-    public static ProteinStructureUtils getInstance() {
-        return instance;
-    }
+public  class ContactMapFromPDB implements ProteinStructureContactMapCalculator { 
     
-    private final GetAlignmentsApi g2sGetAlignmentsApi;
     private final GetResidueMappingApi g2sGetResidueMappingApi;
 
-    private ProteinStructureUtils() {        
+    ContactMapFromPDB() {        
         AtomCache atomCache = new AtomCache();
 //        if (dirPdbCache!=null) {
 //            atomCache.setCachePath(dirPdbCache);
@@ -58,10 +52,10 @@ public final class ProteinStructureUtils {
         atomCache.setFileParsingParams(params);
         StructureIO.setAtomCache(atomCache);
         
-        g2sGetAlignmentsApi = new GetAlignmentsApi();
         g2sGetResidueMappingApi = new GetResidueMappingApi();
     }
     
+    @Override
     public Map<MutatedProtein3D, ContactMap> getContactMaps(MutatedProtein mutatedProtein, 
             double identpThreshold, double distanceThresholdClosestAtoms) {
         Map<MutatedProtein3D, ContactMap> contactMaps = new HashMap<>();
