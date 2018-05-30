@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DecoySignificanceTest {
     
-    private final int detectStop = 10;
+    private final int detectStop = 1000;
     private final int nThread = 100;
     private final int nMaxDecoysPerThread = 1000;
     private final List<DecoyGenerator> decoyGenerators;
@@ -40,15 +40,17 @@ public class DecoySignificanceTest {
     public double test(final DetectedInDecoy detectedInDecoy) {
         reset();
         
-        int decoyPerThread = 1;
+        int decoyPerThread = (int)Math.ceil(detectStop * 1.0 / nThread);
         int nDetected = 0;
+        int nTested = 0;
         
         while (nDetected<detectStop && decoyPerThread<nMaxDecoysPerThread) {
-            nDetected += test(detectedInDecoy, decoyPerThread * 9); // 10 times;
-            decoyPerThread *= 10;
+            nDetected += test(detectedInDecoy, decoyPerThread );
+            nTested += nThread * decoyPerThread;
+            decoyPerThread *= 9;
         }
         
-        return 1.0 * nDetected / (nThread * decoyPerThread);
+        return 1.0 * nDetected / nTested;
     }
     
     private int test(final DetectedInDecoy detectedInDecoy, final int decoyPerThread) {
