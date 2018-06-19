@@ -131,7 +131,7 @@ public class MutatedResidueImpl implements MutatedResidue {
                 for (Hotspot phs : phss) {
                     if (phs.getPValue()<=pvalueThreahold) {
                         MutatedProtein3D p3d = MutatedProtein3D.class.cast(phs.getProtein());
-                        pdbChains.add(p3d.getPdbId()+"."+p3d.getPdbChain());
+                        pdbChains.add(p3d.getPdbId()+"."+p3d.getPdbChain()+"("+phs.getPValue()+")");
                     }
                 }
             }
