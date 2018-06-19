@@ -18,8 +18,6 @@ import java.util.Set;
 import org.biojava.nbio.structure.Atom;
 import org.biojava.nbio.structure.Chain;
 import org.biojava.nbio.structure.Group;
-import org.biojava.nbio.structure.Structure;
-import org.biojava.nbio.structure.StructureIO;
 import org.biojava.nbio.structure.StructureTools;
 import org.biojava.nbio.structure.contact.AtomContact;
 import org.biojava.nbio.structure.contact.AtomContactSet;
@@ -30,10 +28,12 @@ import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedPro
 import org.genomenexus.g2s.client.model.Alignment;
 import org.genomenexus.g2s.client.model.ResidueMapping;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.biojava.nbio.structure.Structure;
 import org.biojava.nbio.structure.io.PDBFileReader;
 
 /**
@@ -162,6 +162,9 @@ public class ContactMapFromSwissModel implements ProteinStructureContactMapCalcu
             PDBFileReader reader = new PDBFileReader();
             URL url = new URL(strUrl);
             Structure structure = reader.getStructure(url.openStream());
+//            FileInputStream fis = new FileInputStream("/Users/jgao/projects/mutationhotspots/process/akt/3o96.pdb");
+//            Structure structure = reader.getStructure(fis);
+
             Chain chain = structure.getChainByIndex(0);
             AtomContactSet contacts = StructureTools.getAtomsInContact(chain, distanceThreashold);
             
