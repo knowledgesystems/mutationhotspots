@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import org.apache.commons.lang.StringUtils;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.MutatedResidueImpl;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.impl.ProteinStructureHotspotDetective;
 import org.cbioportal.mutationhotspots.mutationhotspotsdetection.utils.EnsemblUtils;
@@ -33,8 +34,8 @@ public class HotspotMain {
      */
     public static void main(String[] args) throws IOException {
 //        args = new String[] {
-//            "/Users/jgao/projects/mutationhotspots/process/mda-mutaiton-list.txt",
-//            "/Users/jgao/projects/mutationhotspots/process/mda-mutaiton-list.output.txt"
+//            "/Users/jgao/projects/mutationhotspots/process/histone/maf.gn.txt",
+//            "/Users/jgao/projects/mutationhotspots/process/histone/maf.results.txt"
 //        };
         
         InputStream isFa = HotspotMain.class.getResourceAsStream("/data/Homo_sapiens.GRCh38.pep.all.fa");
@@ -57,10 +58,59 @@ public class HotspotMain {
     }
     
     static void process(SortedMafReader mafReader, HotspotDetectiveParameters params, String dirFile) throws IOException {
-        process(mafReader, params, new File(dirFile));
+        processPerResidue(mafReader, params, new File(dirFile));
     }
     
-    static void process(SortedMafReader mafReader, HotspotDetectiveParameters params, File file) throws IOException {
+    static void processPerCluster(SortedMafReader mafReader, HotspotDetectiveParameters params, File file) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.append("gene\ttranscript\tresidues\tpvalue\tinfo\n");
+
+            HotspotDetective hd = new ProteinStructureHotspotDetective(params);
+
+            int idHotspot = 0;
+            int count = 0;
+            System.out.println("Processing proteins...");
+            while (mafReader.hasNext()) {
+                MutatedProtein mutatedProtein = mafReader.next();
+                
+                System.out.println(""+(++count)+"."+mutatedProtein.getGeneSymbol()+": "+mutatedProtein.getMutations().size()+" mutations");
+                
+                if (mutatedProtein.getMutations().size()<5) {
+                    continue;
+                }
+                
+                Set<Hotspot> hotspots;
+                try {
+                    hotspots = hd.detectHotspots(mutatedProtein);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    continue;
+                }
+                for (Hotspot hotspot : hotspots) {
+                    if (hotspot.getPValue()<=params.getPValueThreshold()) {
+                        hotspot.setId(++idHotspot);
+                    }
+//                    System.out.println(hotspot.getLabel());
+                }
+
+                for (Hotspot hs : hotspots) {
+                    writer.append(hs.getProtein().getGeneSymbol())
+                            .append("\t")
+                            .append(hs.getProtein().getTranscriptId())
+                            .append("\t")
+                            .append(StringUtils.join(hs.getResidues(), ","))
+                            .append("\t")
+                            .append(hs.getLabel())
+                            .append("\n");
+                            
+                }
+
+                writer.flush();
+            }
+        }
+    }
+    
+    static void processPerResidue(SortedMafReader mafReader, HotspotDetectiveParameters params, File file) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.append("gene\ttranscript\tprotein_change\tscore\tpvalue\tqvalue\tinfo\n");
 
