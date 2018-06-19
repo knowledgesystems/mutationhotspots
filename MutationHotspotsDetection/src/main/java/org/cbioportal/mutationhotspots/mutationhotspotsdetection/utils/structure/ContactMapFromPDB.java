@@ -159,7 +159,7 @@ public  class ContactMapFromPDB implements ProteinStructureContactMapCalculator 
         try {
             List<Alignment> alignments = g2sGetResidueMappingApi.postResidueMappingUsingPOST("ensembl", mutatedProtein.getProteinId(), null);
             
-            if (alignments == null && mutatedProtein.getUniprotAcc()!=null) {
+            if ((alignments == null || alignments.isEmpty()) && mutatedProtein.getUniprotAcc()!=null) {
                 alignments = g2sGetResidueMappingApi.postResidueMappingUsingPOST("uniprot", mutatedProtein.getUniprotAcc(), null);
             }
             
