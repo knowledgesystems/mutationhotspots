@@ -114,7 +114,7 @@ public class ProteinImpl implements Protein {
 //    }
 
     protected void setUniProt() throws Exception {
-        String strURL = "http://www.uniprot.org/uniprot/" + uniprotAcc + ".fasta";
+        String strURL = "https://www.uniprot.org/uniprot/" + uniprotAcc + ".fasta";
         try (final InputStream in = new URL(strURL).openStream()) {
             InputStreamReader inR = new InputStreamReader(in);
             BufferedReader buf = new BufferedReader(inR);
