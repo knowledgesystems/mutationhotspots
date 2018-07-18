@@ -164,7 +164,7 @@ public final class SortedMafReader {
 
         String proteinChange = parts[headers.get(HEADER_PROTEIN_CHANGE)];
 
-        if (headers.get(HEADER_PROTEIN_POSITION)>=0) {
+        if (headers.containsKey(HEADER_PROTEIN_POSITION)) {
             String proteinPosition = parts[headers.get(HEADER_PROTEIN_POSITION)].trim();
             if (!proteinPosition.isEmpty() && !proteinPosition.equals(".")) {
                 String[] poss = proteinPosition.split("/")[0].split("-");
