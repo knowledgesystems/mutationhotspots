@@ -6,7 +6,7 @@ Binary JAR file is available in [releases](https://github.com/knowledgesystems/m
 ## Usage
 
 
-`java -jar MutationHotspotsDetection-1.2.0.jar <input.maf> <output.results.txt>`
+`java -jar MutationHotspotsDetection-1.2.1.jar <input.maf> <output.results.txt>`
 
 Here is [an example input MAF file](https://github.com/knowledgesystems/mutationhotspots/blob/1.0.1/MutationHotspotsDetection/src/main/resources/data/example.maf)
 

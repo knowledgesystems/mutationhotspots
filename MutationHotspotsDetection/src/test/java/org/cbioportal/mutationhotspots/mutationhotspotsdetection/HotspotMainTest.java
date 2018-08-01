@@ -62,7 +62,7 @@ public class HotspotMainTest {
         
         File temp = File.createTempFile("tempfile", ".tmp");
         
-        process(mafReader, HotspotDetectiveParameters.getDefaultHotspotDetectiveParameters(), temp);
+        process(mafReader, HotspotDetectiveParameters.getDefaultHotspotDetectiveParameters(), temp.getAbsolutePath());
         
         System.out.println(temp.getAbsolutePath());
     }
